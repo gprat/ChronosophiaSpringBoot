@@ -26,6 +26,7 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<link title="timeline-styles" rel="stylesheet" href="//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
         <script src="//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js">     </script>
+        <link href="<c:url value='/resources/css/timeline_style.css' />" rel="stylesheet"></link>
 </head>
 <body>
 <%@ include file="../navbar.jsp" %>
@@ -43,7 +44,6 @@
 
         var options ={  
            width:'100%',
-           timenav_height: '200',
            timenav_position:'top',
            language:'fr',
            start_at_end:false,

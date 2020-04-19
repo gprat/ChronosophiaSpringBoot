@@ -24,9 +24,10 @@
 	<spring:url value="/resources/css/style.css" var="styleCss" />
 <spring:url value="/resources/css/normalize.css" var="normalizeCss" />
 	<link href="${styleCss}" rel="stylesheet" /> 
-<link href="${normalizeCss}" rel="stylesheet">
+<link href="${normalizeCss}" rel="stylesheet"> 
 </head>
 <body>
+<%@ include file="../navbar.jsp" %>
 <div class="container">
 <div class="col-sm-offset-1 col-sm-9">
  <h1>Ajouter une ville</h1>
@@ -149,7 +150,7 @@
 		}
 		// [END region_geolocation]
 	</script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl6p1I1Vw7gnyXbPK71HpnFBuuNKAeEAM&signed_in=true&libraries=places&language=fr&callback=initAutocomplete"
+	<script src="https://maps.googleapis.com/maps/api/js?key=myKey&signed_in=true&libraries=places&language=fr&callback=initAutocomplete"
         async defer></script>
 </div>
 </body>

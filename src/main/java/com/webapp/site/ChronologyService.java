@@ -8,13 +8,13 @@ public interface ChronologyService {
 
 	List<Chronology> getAllChronologies();
 
-	Chronology getChronology(long id);
+	Chronology getChronology(long id, String username);
 
 	void save(Chronology chronology);
 
-	void delete(long id);
+	void delete(long id, String username);
 	
-	ChronologyForm getChronologyForm(long id);
+	ChronologyForm getChronologyForm(long id, String username);
 	
 	List<Chronology> getChronologiesByUsername(String username);
 

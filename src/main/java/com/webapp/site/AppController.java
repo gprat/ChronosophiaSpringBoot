@@ -1,12 +1,15 @@
 package com.webapp.site;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
  
 
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -88,9 +91,9 @@ public class AppController {
         User user = new User();
         model.addAttribute("user", user);
         model.addAttribute("edit", false);
-        model.addAttribute("loggedinuser", getPrincipal());
         return "registration";
     }
+    
  
     /**
      * This method will be called on form submission, handling POST request for
@@ -121,6 +124,49 @@ public class AppController {
         userService.save(user);
  
         model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " registered successfully");
+        model.addAttribute("loggedinuser", getPrincipal());
+        //return "success";
+        return "registrationsuccess";
+    }
+    
+    @RequestMapping(value = { "/create-user" }, method = RequestMethod.GET)
+    public String createUser(ModelMap model) {
+        User user = new User();
+        model.addAttribute("user", user);
+        return "signup";
+    }
+    
+    @RequestMapping(value = { "/create-user" }, method = RequestMethod.POST)
+    public String saveCreatedUser(@Valid User user, BindingResult result,
+            ModelMap model) {
+ 
+        if (result.hasErrors()) {
+            return "registration";
+        }
+ 
+        /*
+         * Preferred way to achieve uniqueness of field [sso] should be implementing custom @Unique annotation 
+         * and applying it on field [sso] of Model class [User].
+         * 
+         * Below mentioned peace of code [if block] is to demonstrate that you can fill custom errors outside the validation
+         * framework as well while still using internationalized messages.
+         * 
+         */
+        if(!userService.isUserUsernameUnique(user.getIdUser(), user.getUsername())){
+            FieldError loginError =new FieldError("user","login","Le login entré n'est pas unique");
+            result.addError(loginError);
+            return "registration";
+        }
+        
+        Set<UserProfile> userProfiles = new HashSet<UserProfile>() ;
+        
+        userProfiles.add(userProfileService.getUserProfile("ROLE_USER"));
+        
+        user.setUserProfiles(userProfiles);
+         
+        userService.save(user);
+ 
+        model.addAttribute("success", "L'utilisateur " + user.getFirstName() + " "+ user.getLastName() + " a été créé avec succès");
         model.addAttribute("loggedinuser", getPrincipal());
         //return "success";
         return "registrationsuccess";
@@ -167,7 +213,7 @@ public class AppController {
         	userService.update(user);
         }
         
-        model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " updated successfully");
+        model.addAttribute("success", "L'utilisateur" + user.getFirstName() + " "+ user.getLastName() + " a été mis à jour avec succès");
         model.addAttribute("loggedinuser", getPrincipal());
         return "registrationsuccess";
     }

@@ -21,7 +21,7 @@ h1 {
     color: #414a51;
 }
 
-nav {
+/* nav {
     font-size: 3rem;
 }
 nav a {
@@ -32,11 +32,12 @@ nav a:not(:last-child) {
 }
 nav a.active {
     color: #fff!important;
-}
+} */
 
 section {
     margin-top: 10%;
 }
+
 
 #container {
     padding: 0 20px;

@@ -41,8 +41,8 @@ public class RoleController {
 	}
 	
 	@RequestMapping(value = "{id}/delete", method = RequestMethod.POST)
-	public View deleteRole(@PathVariable("id") long id){
-		this.roleService.delete(id);
+	public View deleteRole(@PathVariable("id") long id, Principal principal){
+		this.roleService.delete(id, principal.getName());
 		return new RedirectView("/role/list", true, false);
 	}
 }

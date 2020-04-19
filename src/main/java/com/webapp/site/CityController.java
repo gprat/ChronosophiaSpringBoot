@@ -63,15 +63,17 @@ public class CityController {
     		city = new City();
     	}
     	else{
-    		city=this.cityService.getCity(form.getIdCity());
+    		city=this.cityService.getCity(form.getIdCity(), principal.getName());
     	}
-    	city.setName(form.getCityname());
-    	cityService.setCountry(city, form.getCountryname());
-    	city.setLatitude(form.getLatitude().setScale(6, RoundingMode.HALF_UP));
-    	city.setLongitude(form.getLongitude().setScale(6, RoundingMode.HALF_UP));
-    	city.setUser(this.userService.findByUsername(principal.getName()));
-    	city.setDescription(form.getDescription());
-        cityService.save(city);
+    	if(city!=null) {
+	    	city.setName(form.getCityname());
+	    	cityService.setCountry(city, form.getCountryname());
+	    	city.setLatitude(form.getLatitude().setScale(6, RoundingMode.HALF_UP));
+	    	city.setLongitude(form.getLongitude().setScale(6, RoundingMode.HALF_UP));
+	    	city.setUser(this.userService.findByUsername(principal.getName()));
+	    	city.setDescription(form.getDescription());
+	        cityService.save(city);
+    	}
         return new RedirectView("/city/list", true, false);
     }
     
@@ -104,28 +106,30 @@ public class CityController {
     }
     
     @RequestMapping(value = "/{id}", params ="update", method = RequestMethod.POST)
-	public String ShowUpdateCityForm(@PathVariable("id") long id, Model model) {
-		CityForm cityForm = this.cityService.getCityForm(id);
+	public String ShowUpdateCityForm(@PathVariable("id") long id, Model model,Principal principal) {
+		CityForm cityForm = this.cityService.getCityForm(id,principal.getName());
 		model.addAttribute("cityForm", cityForm);
 		return "city/add";
 	}
     
     @RequestMapping(value = "/{id}", params ="delete", method = RequestMethod.POST)
-	public View deleteCity(@PathVariable("id") long id){
-		this.cityService.deleteCity(id);
+	public View deleteCity(@PathVariable("id") long id, Principal principal){
+		this.cityService.deleteCity(id,principal.getName());
 		return new RedirectView("/city/list", true, false);
 	}
     
     @RequestMapping(value = "/{id}", params ="view", method = RequestMethod.POST)
-	public String view(@PathVariable("id") long id, Model model){
-		model.addAttribute("city", cityService.getCity(id));
-		try{
-			City city = cityService.getCity(id);
-			city.addEventsInJson = true;
-			model.addAttribute("cityJSON", objectMapper.writeValueAsString(city));
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+	public String view(@PathVariable("id") long id, Model model,Principal principal){
+    	City city = cityService.getCity(id,principal.getName());
+    	if(city!=null) {
+			model.addAttribute("city", city);
+			try{
+				city.addEventsInJson = true;
+				model.addAttribute("cityJSON", objectMapper.writeValueAsString(city));
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+    	}
 		return "city/viewcity";
 	}
 

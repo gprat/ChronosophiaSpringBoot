@@ -44,10 +44,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     	CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");
         filter.setForceEncoding(true);
-        http.authorizeRequests().antMatchers("/", "/list","/**/list","/**/view","/**/add","/**/update","/**/delete")
+        http.authorizeRequests().antMatchers("/","/chronosophia/**/list","/chronosophia/**/view","/chronosophia/**/add","/chronosophia/**/update","/**/delete","/chronosophia/**/upload")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_DBA')")
-                .antMatchers("/newuser/**", "/delete-user-*").access("hasRole('ROLE_ADMIN')").antMatchers("/edit-user-*")
-                .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DBA')").and().formLogin().loginPage("/login").permitAll();
+                .antMatchers("/newuser/**", "/delete-user-*").access("hasRole('ROLE_ADMIN')").antMatchers("/edit-user-*", "/list")
+                .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DBA')").antMatchers("/create-user").permitAll().and().formLogin().loginPage("/login").permitAll();
     }
  
     @Bean

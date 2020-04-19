@@ -6,7 +6,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Registration Confirmation Page</title>
+	<title>Confirmation de création de compte</title>
 	<link href="<c:url value='/resources/css/bootstrap.css' />"  rel="stylesheet"></link>
     <link href="<c:url value='/resources/css/app.css' />" rel="stylesheet"></link>
 </head>
@@ -19,7 +19,7 @@
 		</div>
 		
 		<span class="well floatRight">
-			Go to <a href="<c:url value='/list' />">Users List</a>
+			Go to <a href="<c:url value='event/list' />">Evènements</a>
 		</span>
 	</div>
 </body>

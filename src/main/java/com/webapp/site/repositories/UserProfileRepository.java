@@ -6,4 +6,5 @@ import com.webapp.site.entities.UserProfile;
 
 public interface UserProfileRepository extends CrudRepository<UserProfile,Long> {
 
+	UserProfile findOneByName(String name);
 }

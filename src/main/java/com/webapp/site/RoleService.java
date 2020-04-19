@@ -12,9 +12,11 @@ public interface RoleService {
 	
 	void save(Role role);
 	
-	void delete (long id);
+	void delete (long id, String username);
 
 	Role getRole(String name);
 	
 	List<Role> getRolesByUsername(String username);
+
+	Role getRoleByNameAndUsername(String name, String username);
 }

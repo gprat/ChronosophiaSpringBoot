@@ -80,6 +80,12 @@
 	<form:form method="post" action="${addUrl}" style="display: inline;"> 
 		<input type="submit" value="Créer un personnage" class="btn" />
 	</form:form>
+	
+	<spring:url value="/figure/upload" var="uploadUrl" />
+	<form:form method="post" action="${uploadUrl}" enctype="multipart/form-data">
+    <input type="file" name="file" class="btn" /><br/><br/>
+    <input type="submit" value="Submit" class="btn" />
+</form:form>
 </div>
 </body>
 </html>

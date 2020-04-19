@@ -46,10 +46,13 @@ public class ChronologyController {
 	}
 	
 	@RequestMapping(value = "/{id}", params ="view", method = RequestMethod.POST)
-	public String view(@PathVariable("id") long id, Model model){
+	public String view(@PathVariable("id") long id, Model model, Principal principal){
 		try {
-			model.addAttribute("chronologieJSON", objectMapper.writeValueAsString(this.chronologyService.getChronology(id)));
-			model.addAttribute("titre",this.chronologyService.getChronology(id).getName());
+			Chronology chronology = this.chronologyService.getChronology(id, principal.getName());
+			if(chronology!=null) {
+				model.addAttribute("chronologieJSON", objectMapper.writeValueAsString(chronology));
+				model.addAttribute("titre",this.chronologyService.getChronology(id,principal.getName()).getName());
+			}
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,7 +104,7 @@ public class ChronologyController {
 		List<Long> eventListToExclude = new ArrayList<>();
 		if(selectEventForm.eventsToExclude!=null&&selectEventForm.eventsToExclude!=""){
 			new ArrayList<String>(Arrays.asList(selectEventForm.eventsToExclude.split(","))).forEach(idEvent->eventListToExclude.add(Long.parseLong(idEvent)));
-			model.put("SelectedEventList", eventService.getEventsById(eventListToExclude));
+			model.put("SelectedEventList", eventService.getEventsById(eventListToExclude,principal.getName()));
 		}
 		model.put("AvailableEventList", eventService.getEventsFiltered(categoryList, figureList, cityList, eventListToExclude, principal.getName()));
 		
@@ -120,7 +123,7 @@ public class ChronologyController {
 			List<Long> eventListToExclude = new ArrayList<>();
 			if((chronologyForm.getEventList()!=null&&(chronologyForm.getEventList()!=""))){
 				new ArrayList<String>(Arrays.asList(chronologyForm.getEventList().split(","))).forEach(idEvent->eventListToExclude.add(Long.parseLong(idEvent)));
-				model.put("SelectedEventList", eventService.getEventsById(eventListToExclude));
+				model.put("SelectedEventList", eventService.getEventsById(eventListToExclude,principal.getName()));
 			}
 			model.put("AvailableEventList", eventService.getEventsFiltered(categoryList, figureList, cityList,eventListToExclude, principal.getName()));
 			try{
@@ -134,7 +137,10 @@ public class ChronologyController {
 		}
 		Chronology chronology;
 		if(chronologyForm.id!=null&&chronologyForm.id!=0){
-			chronology=chronologyService.getChronology(chronologyForm.id);
+			chronology=chronologyService.getChronology(chronologyForm.id,principal.getName());
+			if(chronology==null) {
+				chronology=new Chronology();
+			}
 		}
 		else{
 			chronology=new Chronology();
@@ -142,7 +148,8 @@ public class ChronologyController {
 		chronology.setName(chronologyForm.name);
 		List<Event> eventList = new ArrayList<>();
 		if(chronologyForm.eventList!=null){
-			new ArrayList<String>(Arrays.asList(chronologyForm.eventList.split(","))).forEach(idEvent->eventList.add(eventService.getEvent(Long.parseLong(idEvent))));
+			new ArrayList<String>(Arrays.asList(chronologyForm.eventList.split(","))).forEach(idEvent->eventList.add(eventService.getEvent(Long.parseLong(idEvent),principal.getName())));
+			while (eventList.remove(null));
 		}
 		chronology.setEvents(eventList);
 		chronology.setUrl(chronologyForm.url);
@@ -155,14 +162,13 @@ public class ChronologyController {
 	
 	@RequestMapping(value = "/{id}", params ="update", method = RequestMethod.POST)
 	public String ShowUpdateChronologyForm(@PathVariable("id") long id, Model model, Principal principal) {
-		ChronologyForm chronologyForm = this.chronologyService.getChronologyForm(id);
-		Chronology chronology = this.chronologyService.getChronology(id);
+		ChronologyForm chronologyForm = this.chronologyService.getChronologyForm(id,principal.getName() );
 		model.addAttribute("chronologyForm", chronologyForm);
 		model.addAttribute("selectEventForm",new SelectEventForm());
 		List<Long> eventListToExclude = new ArrayList<>();
 		if(chronologyForm.eventList!=null&&chronologyForm.eventList!=""){
 			new ArrayList<String>(Arrays.asList(chronologyForm.eventList.split(","))).forEach(idEvent->eventListToExclude.add(Long.parseLong(idEvent)));
-			model.addAttribute("SelectedEventList", eventService.getEventsById(eventListToExclude));
+			model.addAttribute("SelectedEventList", eventService.getEventsById(eventListToExclude,principal.getName()));
 		}
 		model.addAttribute("AvailableEventList", eventService.getEventsFiltered(null, null, null, eventListToExclude, principal.getName()));
 		try{
@@ -176,8 +182,8 @@ public class ChronologyController {
 	}
 	
 	@RequestMapping(value = "/{id}", params ="delete", method = RequestMethod.POST)
-	public View deleteChronology(@PathVariable("id") long id){
-		this.chronologyService.delete(id);
+	public View deleteChronology(@PathVariable("id") long id, Principal principal){
+		this.chronologyService.delete(id, principal.getName());
 		return new RedirectView("/chronology/list", true, false);
 	}
 }

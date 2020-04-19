@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.webapp.site.entities.Category;
+import com.webapp.site.entities.User;
 
 public interface CategoryService {
 	
@@ -15,9 +16,9 @@ public interface CategoryService {
 	
 	void save(Category category);
 	
-	void delete(long id);
-	
-	Category getCategory(String name);
+	void delete(long id, String username);
 
 	List<Category> getCategoriesByUsername(String username);
+
+	Category getCategoryByNameAndUsername(String name, String username);
 }

@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import com.webapp.site.entities.City;
@@ -26,8 +27,12 @@ public class DefaultCityService implements CityService {
 	}
 
 	@Override
-	public City getCity(long id) {
-		return this.cityRepository.findById(id).get();
+	public City getCity(long id, String username) {
+		City city = this.cityRepository.findById(id).get();
+		if (!city.getUser().getUsername().equals(username)) {
+			return null;
+		}
+		else return city;
 	}
 
 	@Override
@@ -37,8 +42,11 @@ public class DefaultCityService implements CityService {
 	}
 
 	@Override
-	public void deleteCity(long id) {
-		this.cityRepository.deleteById(id);
+	public void deleteCity(long id, String username) {
+		City city = this.cityRepository.findById(id).get();
+		if (city.getUser().getUsername().equals(username)) {
+			this.cityRepository.deleteById(id);
+		}
 	}
 	
 	@Override
@@ -54,16 +62,19 @@ public class DefaultCityService implements CityService {
 	}
 	
 	@Override
-	public CityForm getCityForm(long id){
-		City city = getCity(id);
-		CityForm form = new CityForm();
-		form.setIdCity(id);
-		form.setCityname(city.getName());
-		form.setCountryname(city.getCountry().getName());
-		form.setLatitude(city.getLatitude());
-		form.setLongitude(city.getLongitude());
-		form.setDescription(city.getDescription());
-		return form;
+	public CityForm getCityForm(long id, String username){
+		City city = getCity(id, username);
+		if(city!=null) {
+			CityForm form = new CityForm();
+			form.setIdCity(id);
+			form.setCityname(city.getName());
+			form.setCountryname(city.getCountry().getName());
+			form.setLatitude(city.getLatitude());
+			form.setLongitude(city.getLongitude());
+			form.setDescription(city.getDescription());
+			return form;
+		}
+		else return new CityForm();
 	}
 	
 	@Override
@@ -74,6 +85,23 @@ public class DefaultCityService implements CityService {
 	@Override
 	public List<City> getCitiesByEventYear(String username, int yearStart, int yearEnd){
 		return this.cityRepository.findByUser_usernameAndEvents_Date_YearBetween(username, yearStart, yearEnd);
+	}
+	
+	@Override
+	public City GetCityByDetails(City city) {
+		City cityToReturn = null;
+		List<City> cityList = this.cityRepository.findByNameAndCountry_nameAndUser_username(city.getName(), city.getCountry().getName(), city.getUser().getUsername());
+		if(cityList!=null&&!cityList.isEmpty()) {
+			for(City cityInList : cityList) {
+				if(city.getLatitude().compareTo(cityInList.getLatitude().add(new BigDecimal(0.3)))<0
+				&&city.getLatitude().compareTo(cityInList.getLatitude().subtract(new BigDecimal(0.3)))>0
+				&&city.getLongitude().compareTo(cityInList.getLongitude().add(new BigDecimal(0.5)))<0
+				&&city.getLongitude().compareTo(cityInList.getLongitude().subtract(new BigDecimal(0.5)))>0) {
+					cityToReturn = cityInList;
+				}
+			}
+		}
+		return cityToReturn;
 	}
 
 }

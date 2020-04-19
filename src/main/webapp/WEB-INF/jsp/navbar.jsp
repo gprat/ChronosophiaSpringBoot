@@ -26,9 +26,7 @@
       <li><a href="${cityUrl}">Villes</a></li>  
       <li><a href="${categoryUrl}">Catégories</a></li>  
       <li><a href="${roleUrl}">Positions</a></li>
-      <sec:authorize access="hasRole('ADMIN') or hasRole('DBA')">
-      <li><a href="${userListUrl}">Utilisateurs</a></li>
-      </sec:authorize>    
+      <li><a href="${userListUrl}" >Utilisateurs</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="${logoutUrl}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>

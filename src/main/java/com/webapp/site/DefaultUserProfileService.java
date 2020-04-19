@@ -36,4 +36,9 @@ public class DefaultUserProfileService implements UserProfileService {
 	public void delete(Long id){
 		userProfileRepository.deleteById(id);
 	}
+	
+	@Override
+	public UserProfile getUserProfile(String userProfile) {
+		return userProfileRepository.findOneByName(userProfile);
+	}
 }

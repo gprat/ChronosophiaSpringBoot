@@ -1,5 +1,6 @@
 package com.webapp.site;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +10,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.webapp.site.repositories.EventRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.webapp.site.entities.Category;
+import com.webapp.site.entities.City;
+import com.webapp.site.entities.Date;
 import com.webapp.site.entities.Event;
 import com.webapp.site.entities.Figure;
+import com.webapp.site.entities.User;
 
 @Service
 public class DefaultEventService implements EventService {
 
 	@Inject EventRepository eventRepository;
+	@Inject DateService dateService;
+	@Inject UserService userService;
+	@Inject CategoryService categoryService;
+	@Inject CityService cityService;
+	
 	
 	@Override
 	@Transactional
@@ -28,50 +38,59 @@ public class DefaultEventService implements EventService {
 	
 	@Override
 	@Transactional
-	public Event getEvent(long id){
-		return this.eventRepository.findById(id).get();
+	public Event getEvent(long id, String username){
+		Event  event  = this.eventRepository.findById(id).get();
+		if(event.getUser().getUsername().equals(username)) {
+			return event;
+		}
+		else return null;
 	}
 	
 	@Override
 	@Transactional
-	public EventForm getEventForm(Long id){
-		Event event = getEvent(id);
+	public EventForm getEventForm(Long id, String username){
+		Event event = getEvent(id, username);
 		EventForm eventForm = new EventForm();
-		eventForm.id=event.getIdEvent();
-		if(event.getDate()!=null){
-			eventForm.day=event.getDate().getDay();
-			eventForm.month=event.getDate().getMonth();
-			eventForm.year=event.getDate().getYear();
+		if(event!=null) {
+			eventForm.id=event.getIdEvent();
+			if(event.getDate()!=null){
+				eventForm.day=event.getDate().getDay();
+				eventForm.month=event.getDate().getMonth();
+				eventForm.year=event.getDate().getYear();
+			}
+			eventForm.name=event.getName();
+			eventForm.url=event.getUrl();
+			eventForm.description=event.getDescription();
+			if(event.getCity()!=null){
+				eventForm.idCity=String.valueOf(event.getCity().getIdCity());
+			}
+			String figureList="";
+			for(Figure f : event.getFigures()){
+				figureList=figureList.concat(String.valueOf(f.getIdFigure())+",");
+			}
+			if(figureList!="") figureList.substring(1,figureList.length()-1);
+			eventForm.figures=figureList;
+			String categoryList="";
+			for(Category c: event.getCategories()){
+				categoryList=categoryList.concat(String.valueOf(c.getIdCategory())+",");
+			}
+			if(categoryList!="") categoryList.substring(1,categoryList.length()-1);
+			eventForm.categories=categoryList;
 		}
-		eventForm.name=event.getName();
-		eventForm.url=event.getUrl();
-		eventForm.description=event.getDescription();
-		if(event.getCity()!=null){
-			eventForm.idCity=String.valueOf(event.getCity().getIdCity());
-		}
-		String figureList="";
-		for(Figure f : event.getFigures()){
-			figureList=figureList.concat(String.valueOf(f.getIdFigure())+",");
-		}
-		if(figureList!="") figureList.substring(1,figureList.length()-1);
-		eventForm.figures=figureList;
-		String categoryList="";
-		for(Category c: event.getCategories()){
-			categoryList=categoryList.concat(String.valueOf(c.getIdCategory())+",");
-		}
-		if(categoryList!="") categoryList.substring(1,categoryList.length()-1);
-		eventForm.categories=categoryList;
 		return eventForm;
 	}
 	
 	@Override
-	public void save(Event event){
-		this.eventRepository.save(event);
+	public Event save(Event event){
+		return this.eventRepository.save(event);
 	}
 	
 	@Override
-	public void delete(long id){
-		this.eventRepository.deleteById(id);
+	public void delete(long id, String username){
+		Event  event  = this.eventRepository.findById(id).get();
+		if(event.getUser().getUsername().equals(username)) {
+			this.eventRepository.deleteById(id);
+		}
 	}
 	
 	@Override
@@ -100,15 +119,74 @@ public class DefaultEventService implements EventService {
 	}
 	
 	@Override
-	public List<Event> getEventsById(List<Long> IdEvents){
-		List<Event> list = new ArrayList<>();
-		this.eventRepository.findByIdEventIn(IdEvents).forEach(e->list.add(e));
+	public List<Event> getEventsById(List<Long> IdEvents, String username){
+		List<Event> list = this.eventRepository.findByIdEventIn(IdEvents);
+		for(Event e : list) {
+			if (!e.getUser().getUsername().equals(username)) {
+				list.remove(e);
+			}
+		}
 		return list;
 	}
 	
 	@Override
 	public List<Event> getEventsByUsername(String username){
 		return this.eventRepository.findByUser_username(username);
+	}
+	
+	@Override
+	public boolean existsEvent(Date date, String name, User user) {
+		List<Event> eventList = this.eventRepository.findByDateAndNameAndUser(date, name,user);
+		return(eventList!=null&&!eventList.isEmpty());
+	}
+	
+	@Override
+	public Event importEvent(JsonNode root, String username) {
+		Event event = new Event();
+		event.setName(root.path("name").asText());
+		event.setUser(this.userService.findByUsername(username));
+		JsonNode dateNode = root.path("date");
+		//TO DO - Verifier le comportement avec des valeurs nulles
+		event.setDate(this.dateService.setDate(dateNode.path("day").asInt(), dateNode.path("month").asInt(), dateNode.path("year").asInt()));
+		if(!existsEvent(event.getDate(), event.getName(), event.getUser())) {
+			List<Category> categoryList =  new ArrayList<>();
+			for(JsonNode categoryNode : root.path("categories")) {
+				String categoryName = categoryNode.path("name").asText();
+				 Category category = this.categoryService.getCategoryByNameAndUsername(categoryName, username);
+				 if (category == null) {
+					 category = new Category();
+					 category.setName(categoryName);
+					 category.setUser(event.getUser());
+					 this.categoryService.save(category);
+					 category = this.categoryService.getCategoryByNameAndUsername(categoryName, username);
+				 }
+				 categoryList.add(category);
+			}
+			event.setCategories(categoryList);
+			event.setDescription(root.path("description").asText());
+			event.setUrl(root.path("url").asText());
+			JsonNode cityNode = root.path("city");
+			if (!cityNode.isMissingNode()) {
+				City city = new City();
+				city.setName(cityNode.path("name").asText());
+				cityService.setCountry(city, cityNode.path("country").asText());
+				city.setLatitude(new BigDecimal(cityNode.findPath("latitude").asDouble()));
+				city.setLongitude(new BigDecimal(cityNode.findPath("longitude").asDouble()));
+				city.setUser(event.getUser());
+				city.setDescription(cityNode.findPath("description").asText());
+				City cityTemp = cityService.GetCityByDetails(city);
+				if(cityTemp!=null) {
+					city=cityTemp;
+				}
+				else {
+					cityService.save(city);
+					city=cityService.GetCityByDetails(city);
+				}
+				event.setCity(city);
+			}
+			return save(event);
+		}
+		return null;
 	}
 	
 }

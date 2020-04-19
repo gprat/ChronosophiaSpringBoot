@@ -4,10 +4,13 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.webapp.site.entities.Category;
 import com.webapp.site.entities.Event;
 import com.webapp.site.entities.Figure;
+import com.webapp.site.entities.Role;
 
 public class FigureSerializer extends StdSerializer<Figure> {
 
@@ -62,6 +65,42 @@ public class FigureSerializer extends StdSerializer<Figure> {
 				jgen.writeEndObject();
 			}
 			jgen.writeEndArray();
+			jgen.writeFieldName("eventsToImport");
+			ObjectMapper mapper = (ObjectMapper) jgen.getCodec();
+			String stringValue = mapper.writeValueAsString(figure.getEvents());
+			jgen.writeRawValue(stringValue);
+			jgen.writeFieldName("categories");
+			jgen.writeStartArray();
+			for(Category c : figure.getCategories()) {
+				jgen.writeStartObject();
+				jgen.writeStringField("name", c.getName());
+				jgen.writeEndObject();
+			}
+			jgen.writeEndArray();
+			jgen.writeFieldName("roles");
+			jgen.writeStartArray();
+			for(Role r : figure.getRoles()) {
+				jgen.writeStartObject();
+				jgen.writeStringField("name", r.getName());
+				jgen.writeEndObject();
+			}
+			jgen.writeEndArray();
+			jgen.writeStringField("biography", figure.getBiography());
+			jgen.writeStringField("url", figure.getUrl());
+			if(figure.getBirthDate()!=null) {
+				jgen.writeObjectFieldStart("birthDate");
+				jgen.writeNumberField("year", figure.getBirthDate().getYear());
+				if(figure.getBirthDate().getMonth()!=null) jgen.writeNumberField("month", figure.getBirthDate().getMonth());
+				if(figure.getBirthDate().getDay()!=null)jgen.writeNumberField("day", figure.getBirthDate().getDay());
+				jgen.writeEndObject();
+			}
+			if(figure.getDeathDate()!=null) {
+				jgen.writeObjectFieldStart("deathDate");
+				jgen.writeNumberField("year", figure.getDeathDate().getYear());
+				if(figure.getDeathDate().getMonth()!=null) jgen.writeNumberField("month", figure.getDeathDate().getMonth());
+				if(figure.getDeathDate().getDay()!=null) jgen.writeNumberField("day", figure.getDeathDate().getDay());
+				jgen.writeEndObject();
+			}
 		 jgen.writeEndObject();
 	 }
 	

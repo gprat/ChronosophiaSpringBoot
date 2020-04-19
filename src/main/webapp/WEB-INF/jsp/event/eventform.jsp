@@ -39,6 +39,7 @@
 <title>Ajouter un évènement</title>
 </head>
 <body>
+<%@ include file="../navbar.jsp" %>
 	<div class="container">
 		<div class="col-sm-offset-1 col-sm-9">
 			<h1>Ajouter un évènement</h1>

@@ -7,6 +7,9 @@ import javax.persistence.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.webapp.site.EventSerializer;
+import com.webapp.site.FigureSerializer;
 
 import java.util.List;
 
@@ -18,6 +21,7 @@ import java.util.List;
 @Entity
 @Table(name="event")
 @NamedQuery(name="Event.findAll", query="SELECT e FROM Event e")
+@JsonSerialize(using = EventSerializer.class)
 public class Event implements Serializable {
 	private static final long serialVersionUID = 1L;
 

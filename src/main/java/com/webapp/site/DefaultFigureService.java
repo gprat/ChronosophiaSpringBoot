@@ -26,8 +26,12 @@ public class DefaultFigureService implements FigureService {
 	}
 
 	@Override
-	public Figure getFigure(long id) {
-		return this.figureRepository.findById(id).get();
+	public Figure getFigure(long id, String username) {
+		Figure figure = this.figureRepository.findById(id).get();
+		if(figure.getUser().getUsername().equals(username)) {
+			return figure;
+		}
+		else return null;
 	}
 
 	@Override
@@ -36,42 +40,47 @@ public class DefaultFigureService implements FigureService {
 	}
 
 	@Override
-	public void delete(long id) {
-		this.figureRepository.deleteById(id);
+	public void delete(long id, String username) {
+		Figure figure = this.figureRepository.findById(id).get();
+		if(figure.getUser().getUsername().equals(username)) {
+			this.figureRepository.deleteById(id);
+		}
 	}
 	
 	@Override
 	@Transactional
-	public FigureForm getFigureForm(Long id){
-		Figure figure = getFigure(id);
+	public FigureForm getFigureForm(Long id, String username){
+		Figure figure = getFigure(id, username);
 		FigureForm figureForm = new FigureForm();
-		figureForm.id=figure.getIdFigure();
-		if(figure.getBirthDate()!=null){
-			figureForm.dayOfBirth=figure.getBirthDate().getDay();
-			figureForm.monthOfBirth=figure.getBirthDate().getMonth();
-			figureForm.yearOfBirth=figure.getBirthDate().getYear();
+		if(figure!=null) {
+			figureForm.id=figure.getIdFigure();
+			if(figure.getBirthDate()!=null){
+				figureForm.dayOfBirth=figure.getBirthDate().getDay();
+				figureForm.monthOfBirth=figure.getBirthDate().getMonth();
+				figureForm.yearOfBirth=figure.getBirthDate().getYear();
+			}
+			if(figure.getDeathDate()!=null){
+				figureForm.dayOfDeath=figure.getDeathDate().getDay();
+				figureForm.monthOfDeath=figure.getDeathDate().getMonth();
+				figureForm.yearOfDeath=figure.getDeathDate().getYear();
+			}
+			figureForm.firstName=figure.getFirstName();
+			figureForm.lastName=figure.getLastName();
+			String categoryList="";
+			for(Category c: figure.getCategories()){
+				categoryList=categoryList.concat(String.valueOf(c.getIdCategory())+",");
+			}
+			if(categoryList!="") categoryList.substring(1,categoryList.length()-1);
+			figureForm.categories=categoryList;
+			String roleList="";
+			for(Role r: figure.getRoles()){
+				roleList=roleList.concat(String.valueOf(r.getIdRole())+",");
+			}
+			if(roleList!="") roleList.substring(1,roleList.length()-1);
+			figureForm.roles=roleList;
+			figureForm.biography=figure.getBiography();
+			figureForm.url=figure.getUrl();
 		}
-		if(figure.getDeathDate()!=null){
-			figureForm.dayOfDeath=figure.getDeathDate().getDay();
-			figureForm.monthOfDeath=figure.getDeathDate().getMonth();
-			figureForm.yearOfDeath=figure.getDeathDate().getYear();
-		}
-		figureForm.firstName=figure.getFirstName();
-		figureForm.lastName=figure.getLastName();
-		String categoryList="";
-		for(Category c: figure.getCategories()){
-			categoryList=categoryList.concat(String.valueOf(c.getIdCategory())+",");
-		}
-		if(categoryList!="") categoryList.substring(1,categoryList.length()-1);
-		figureForm.categories=categoryList;
-		String roleList="";
-		for(Role r: figure.getRoles()){
-			roleList=roleList.concat(String.valueOf(r.getIdRole())+",");
-		}
-		if(roleList!="") roleList.substring(1,roleList.length()-1);
-		figureForm.roles=roleList;
-		figureForm.biography=figure.getBiography();
-		figureForm.url=figure.getUrl();
 		return figureForm;
 	}
 	
@@ -96,5 +105,11 @@ public class DefaultFigureService implements FigureService {
 	@Override
 	public List<Figure>  getFiguresByUsername(String username){
 		return this.figureRepository.findByUser_username(username);
+	}
+	
+	@Override
+	public boolean existsFigure(String firstName, String lastName, int year, String username) {
+		List<Figure> figureList = this.figureRepository.findByFirstNameAndLastNameAndBirthDate_yearAndUser_username(firstName, lastName, year, username);
+		return(figureList!=null&&!figureList.isEmpty());
 	}
 }

@@ -50,8 +50,8 @@ public class CategoryController {
 	}
 	
 	@RequestMapping(value = "{id}/delete", method = RequestMethod.POST)
-	public View deleteCategory(@PathVariable("id") long id){
-		this.categoryService.delete(id);
+	public View deleteCategory(@PathVariable("id") long id, Principal principal){
+		this.categoryService.delete(id, principal.getName());
 		return new RedirectView("/category/list", true, false);
 	}
 	

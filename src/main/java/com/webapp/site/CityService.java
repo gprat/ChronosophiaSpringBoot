@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import java.security.Principal;
 import java.util.List;
 
 @Validated
@@ -20,19 +21,21 @@ public interface CityService {
 	
 	City getCity(
 			@Min(value = 1L, message = "{validate.cityService.getCity.id}")
-            long id
+            long id, String username
 	);
 	
 	void save(@NotNull(message = "{validate.cityService.save.city}")
     		@Valid City city);
 	
-	void deleteCity(long id);
+	void deleteCity(long id, String username);
 	
 	void setCountry(City city,String countryname);
 	
-	CityForm getCityForm(long id);
+	CityForm getCityForm(long id, String username);
 	
 	List<City> getCitiesByUsername(String username);
 	
 	List<City> getCitiesByEventYear(String username, int yearStart, int yearEnd);
+
+	City GetCityByDetails(City city);
 }

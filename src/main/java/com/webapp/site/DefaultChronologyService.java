@@ -28,8 +28,12 @@ public class DefaultChronologyService implements ChronologyService {
 	}
 	
 	@Override
-	public Chronology getChronology(long id){
-		return chronologyRepository.findById(id).get();
+	public Chronology getChronology(long id, String username){
+		Chronology chronology = chronologyRepository.findById(id).get();
+		if (chronology.getUser().getUsername().equals(username)) {
+			return chronology;
+		}
+		else return null; 
 	}
 
 	
@@ -39,13 +43,16 @@ public class DefaultChronologyService implements ChronologyService {
 	}
 	
 	@Override
-	public void delete(long id){
-		chronologyRepository.deleteById(id);
+	public void delete(long id, String username){
+		Chronology chronology = chronologyRepository.findById(id).get();
+		if (chronology.getUser().getUsername().equals(username)) {
+			chronologyRepository.deleteById(id);
+		}
 	}
 	
 	@Override
-	public ChronologyForm getChronologyForm(long id){
-		Chronology chronology = getChronology(id);
+	public ChronologyForm getChronologyForm(long id, String username){
+		Chronology chronology = getChronology(id, username);
 		ChronologyForm chronologyForm = new ChronologyForm();
 		if(chronology!=null){
 			String eventList="";

@@ -7,8 +7,8 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Users List</title>
-	<link href="<c:url value='/resources/css/bootstrap.css' />"  rel="stylesheet"></link>
+	<title>Liste des utilisateurs</title>
+
     <link href="<c:url value='/resources/css/app.css' />" rel="stylesheet"></link>
     
   <link rel="stylesheet"
@@ -24,19 +24,18 @@
 </head>
 
 <body>
-<%@ include file="navbar.jsp" %>
 	<div class="generic-container">
 		
 		<div class="panel panel-default">
 			  <!-- Default panel contents -->
-		  	<div class="panel-heading"><span class="lead">List of Users </span></div>
+		  	<div class="panel-heading"><span class="lead">Liste des utilisateurs </span></div>
 			<table class="table table-hover">
 	    		<thead>
 		      		<tr>
-				        <th>Firstname</th>
-				        <th>Lastname</th>
+				        <th>Prénom</th>
+				        <th>Nom</th>
 				        <th>Email</th>
-				        <th>username</th>
+				        <th>Nom d'utilisateur</th>
 				        <sec:authorize access="hasRole('ADMIN') or hasRole('DBA')">
 				        	<th width="100"></th>
 				        </sec:authorize>
@@ -54,10 +53,18 @@
 						<td>${user.email}</td>
 						<td>${user.username}</td>
 					    <sec:authorize access="hasRole('ADMIN') or hasRole('DBA')">
-							<td><a href="<c:url value='/edit-user-${user.username}' />" class="btn btn-success custom-width">edit</a></td>
+					    	<spring:url value="/edit-user-${user.username}" var="newuserUrl" />
+							
+							<td><form:form method="get" action="${newuserUrl}" style="display: inline;"> 
+								<input type="submit" value="Modifier" class="btn" />
+							</form:form></td>
 				        </sec:authorize>
 				        <sec:authorize access="hasRole('ADMIN')">
-							<td><a href="<c:url value='/delete-user-${user.username}' />" class="btn btn-danger custom-width">delete</a></td>
+				        	<spring:url value="/delete-user-${user.username}" var="newuserUrl" />
+							
+							<td><form:form method="get" action="${newuserUrl}" style="display: inline;"> 
+								<input type="submit" value="Supprimer" class="btn" />
+							</form:form></td>
         				</sec:authorize>
 					</tr>
 				</c:forEach>
@@ -65,8 +72,15 @@
 	    	</table>
 		</div>
 		<sec:authorize access="hasRole('ADMIN')">
-		 	<a href="<c:url value='/newuser' />" class="btn btn-success">Add New User</a>
+			<spring:url value="/newuser" var="newuserUrl" />
+			<form:form method="get" action="${newuserUrl}" style="display: inline;"> 
+				<input type="submit" value="Ajouter un nouvel utilisateur" class="btn" />
+			</form:form>
 	 	</sec:authorize>
+	 	<spring:url value="/create-user" var="createuserUrl" />
+		<form:form method="get" action="${createuserUrl}" style="display: inline;"> 
+			<input type="submit" value="Ajouter un nouvel utilisateur" class="btn" />
+		</form:form>
    	</div>
 </body>
 </html>

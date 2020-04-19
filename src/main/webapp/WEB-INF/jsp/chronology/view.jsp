@@ -10,8 +10,20 @@
     <head>
         <link title="timeline-styles" rel="stylesheet" href="//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
         <script src="//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js">     </script>
+        <link href="<c:url value='/resources/css/timeline_style.css' />" rel="stylesheet"></link>
+        <link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 <body>
+<%@ include file="../navbar.jsp" %>
     <div id="Timeline"></div>
     <script>
 
@@ -19,7 +31,7 @@
 
         var options ={  
            width:'100%',
-           height:'1500',
+           height:'500',
            timenav_position:'top',
            language:'fr',
            start_at_end:false,

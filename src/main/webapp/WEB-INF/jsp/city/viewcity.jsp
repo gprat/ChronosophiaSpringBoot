@@ -14,6 +14,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- Latest compiled and minified CSS -->
+<link href="<c:url value='/resources/css/timeline_style.css' />" rel="stylesheet"></link>
+
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -29,12 +31,8 @@
 </head>
 <body>
 <%@ include file="../navbar.jsp" %>
-<div class="container">
+<div class="container" height="40">
 <h3><c:out value="${city.toString()}"></c:out></h3>
-<p>
-  <c:out value="${city.description}"></c:out>
-</p>
-
 <div id="Timeline"></div>
     <script>
 
@@ -42,8 +40,7 @@
 
         var options ={  
            width:'100%',
-           timenav_height: '200',
-           timenav_position:'bottom',
+           timenav_position:'top',
            language:'fr',
            start_at_end:false,
            initial_zoom:1,
@@ -53,6 +50,10 @@
          window.timeline = new TL.Timeline('Timeline',bpmnJsonString,options);
     </script>
 
+
+<p>
+  <c:out value="${city.description}"></c:out>
+</p>
  
 </div>
 

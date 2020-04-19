@@ -15,4 +15,6 @@ public interface FigureRepository extends CrudRepository<Figure,Long> {
 	List<Figure> findByRoles_NameAndUser_username(String name, String username);
 	
 	List<Figure> findByUser_username(String username);
+	
+	List<Figure> findByFirstNameAndLastNameAndBirthDate_yearAndUser_username(String firstName, String lastName, int year, String username);
 }

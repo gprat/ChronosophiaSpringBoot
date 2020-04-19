@@ -7,11 +7,27 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl6p1I1Vw7gnyXbPK71HpnFBuuNKAeEAM"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=myKey"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+<meta name="_csrf" content="${_csrf.token}" />
+<meta name="_csrf_header" content="${_csrf.headerName}" />
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+
+
+<!-- Latest compiled JavaScript -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <title>View Cities</title>
 </head>
 <body>
+<%@ include file="../navbar.jsp" %>
     <style>
         #map-canvas {
           height: 800px;
@@ -21,6 +37,11 @@
         }
     </style>
 <div id="map-canvas"></div>
+<div id="city-canvas"></div>
+<form:form method="post" style="display: inline;" id="form_id"> 
+				  	<input type="submit" value="Afficher" name="view" class="btn" />
+</form:form>
+
 <script type="text/javascript">
 var json = ${citiesJSON}
 
@@ -59,6 +80,9 @@ var map;
 	            return function() {
 	                infoWindow.setContent(json[i].infocontent);
 	                infoWindow.open(map, marker);
+	                $('#city-canvas').html(json[i].infocontent);
+
+	                $("#form_id").attr("action", "/chronosophia/city/"+json[i].idCity); 
 	            }
 	        })(marker, i));
 
@@ -69,6 +93,8 @@ var map;
 
 	//Initialize the map
 	google.maps.event.addDomListener(window, 'load', initialize);
+	
+	
 </script>
 </body>
 </html>

@@ -12,4 +12,5 @@ public interface CategoryRepository extends CrudRepository<Category, Long> {
 	
 	List<Category> findByUser_username(String username);
 
+	Category getOneByNameAndUser_username(String name, String username);
 }
