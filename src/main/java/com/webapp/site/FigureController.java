@@ -28,6 +28,7 @@ import com.webapp.site.entities.Figure;
 import com.webapp.site.entities.Role;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
@@ -74,7 +75,7 @@ public class FigureController {
 		return "figure/list";
 	}
 	
-	@RequestMapping(value = "/{id}", params ="update", method = RequestMethod.POST)
+	@RequestMapping(value = "/id/{id}", params ="update", method = RequestMethod.POST)
 	public String showUpdateFigureForm(@PathVariable("id") long id, Model model, Principal principal) {
 		FigureForm figureForm = this.figureService.getFigureForm(id, principal.getName());
 		try{
@@ -132,13 +133,13 @@ public class FigureController {
 		return new RedirectView("/figure/list", true, false);
 	}
 	
-	@RequestMapping(value = "/{id}", params ="delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/id/{id}", params ="delete", method = RequestMethod.POST)
 	public View deleteFigure(@PathVariable("id") long id, Principal principal){
 		this.figureService.delete(id, principal.getName());
 		return new RedirectView("/figure/list", true, false);
 	}
 	
-	@RequestMapping(value = "/{id}", params ="view", method = RequestMethod.POST)
+	@RequestMapping(value = "/id/{id}", params ="view", method = RequestMethod.POST)
 	public String view(@PathVariable("id") long id, Model model, Principal principal){
 		model.addAttribute("figure", figureService.getFigure(id, principal.getName()));
 		try{
@@ -149,27 +150,32 @@ public class FigureController {
 		return "figure/view";
 	}
 	
-	@RequestMapping(value = "/download", method = RequestMethod.GET)
-	 public @ResponseBody 
-	 void downloadFile(HttpServletResponse resp, Principal principal) {
-	  String downloadFileName= "download.json";
-	  String downloadStringContent = "";
-		try {
-			downloadStringContent = objectMapper.writeValueAsString(this.figureService.getFiguresByUsername(principal.getName()));
-		} catch (JsonProcessingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	  try {
-	   OutputStream out = resp.getOutputStream();
-	   resp.setContentType("text/plain; charset=utf-8");
-	   resp.addHeader("Content-Disposition","attachment; filename=\"" + downloadFileName + "\"");
-	   out.write(downloadStringContent.getBytes(Charset.forName("UTF-8")));
-	   out.flush();
-	   out.close();
+	@PostMapping("/download")
+	 public @ResponseBody void downloadFile(HttpServletRequest req ,HttpServletResponse resp, Principal principal) {
+		String[] selectedIds = req.getParameterValues("selectedIds");
+		List<Long> idList = new ArrayList();
+		if(selectedIds!=null&&selectedIds.length>0) {
+			new ArrayList<String>(Arrays.asList(selectedIds)).forEach(idFigure->idList.add(Long.parseLong(idFigure)));
+			String downloadFileName= "download.json";
+			String downloadStringContent = "";
+			try {
+				downloadStringContent = objectMapper.writeValueAsString(this.figureService.getFiguresByUsernameAndIds(principal.getName(),idList));
+			} catch (JsonProcessingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				OutputStream out = resp.getOutputStream();
+				resp.setContentType("text/plain; charset=utf-8");
+				resp.addHeader("Content-Disposition","attachment; filename=\"" + downloadFileName + "\"");
+				out.write(downloadStringContent.getBytes(Charset.forName("UTF-8")));
+				out.flush();
+				out.close();
 
-	  } catch (IOException e) {
-	  }
+			} catch (IOException e) {
+				
+			}
+		}
 	 }
 	
 	@PostMapping("/upload")
@@ -179,8 +185,8 @@ public class FigureController {
 			JsonNode rootArray =  mapper.readTree(file.getInputStream());
 			for (JsonNode root : rootArray) {
 				Figure figure = new Figure();
-				figure.setFirstName(root.findPath("firstName").asText());
-				figure.setLastName(root.findPath("lastName").asText());
+				figure.setFirstName(root.path("firstName").asText());
+				figure.setLastName(root.path("lastName").asText());
 				figure.setUser(this.userService.findByUsername(principal.getName()));
 				JsonNode birthDateNode = root.path("birthDate");
 				if (!birthDateNode.isMissingNode()) figure.setBirthDate(this.dateService.setDate(birthDateNode.path("day").asInt(), birthDateNode.path("month").asInt(), birthDateNode.path("year").asInt()));
@@ -188,7 +194,7 @@ public class FigureController {
 				if (!deathDateNode.isMissingNode()) figure.setDeathDate(this.dateService.setDate(deathDateNode.path("day").asInt(), deathDateNode.path("month").asInt(), deathDateNode.path("year").asInt()));
 				if(!this.figureService.existsFigure(figure.getFirstName(), figure.getLastName(), figure.getBirthDate().getYear(), principal.getName())) {
 					List<Event> eventList = new ArrayList();
-					for(JsonNode rootEvent : root.findPath("eventsToImport")) { 
+					for(JsonNode rootEvent : root.path("eventsToImport")) { 
 						Event event = this.eventService.importEvent(rootEvent, principal.getName());
 						if(event!=null) {
 							eventList.add(event);
@@ -198,15 +204,7 @@ public class FigureController {
 					List<Category> categoryList =  new ArrayList<>();
 					for(JsonNode categoryNode : root.path("categories")) {
 						String categoryName = categoryNode.path("name").asText();
-						 Category category = this.categoryService.getCategoryByNameAndUsername(categoryName, principal.getName());
-						 if (category == null) {
-							 category = new Category();
-							 category.setName(categoryName);
-							 category.setUser(figure.getUser());
-							 this.categoryService.save(category);
-							 category = this.categoryService.getCategoryByNameAndUsername(categoryName, principal.getName());
-						 }
-						 categoryList.add(category);
+						categoryList.add(this.categoryService.setCategory(categoryName, principal.getName()));
 					}
 					figure.setCategories(categoryList);
 					List<Role> roleList =  new ArrayList<>();
@@ -236,4 +234,10 @@ public class FigureController {
 		}
 		 return "redirect:list";
 	 }
+	
+	@RequestMapping(value = {"export"}, method = RequestMethod.GET)
+    public String export(Map<String, Object> model, Principal principal){
+		model.put("figures",this.figureService.getFiguresByUsername(principal.getName()));
+		return "figure/export";
+	}
 }

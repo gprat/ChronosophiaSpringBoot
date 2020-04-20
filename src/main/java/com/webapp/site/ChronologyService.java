@@ -18,4 +18,8 @@ public interface ChronologyService {
 	
 	List<Chronology> getChronologiesByUsername(String username);
 
+	boolean ExistChronology(String name, int size, String username);
+
+	List<Chronology> getChronologiesByUsernameAndIds(String username, List<Long> IdChronologies);
+
 }

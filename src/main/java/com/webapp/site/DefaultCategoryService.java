@@ -10,12 +10,17 @@ import org.springframework.stereotype.Service;
 import com.webapp.site.entities.Category;
 import com.webapp.site.entities.User;
 import com.webapp.site.repositories.CategoryRepository;
+import com.webapp.site.repositories.UserRepository;
+
 
 @Service
 public class DefaultCategoryService implements CategoryService {
 
 	@Inject
 	CategoryRepository categorieRepository;
+	
+	@Inject
+	UserRepository userRepository;
 	
 	@Override
 	public List<Category> getAllCategories() {
@@ -50,6 +55,19 @@ public class DefaultCategoryService implements CategoryService {
 	@Override
 	public Category getCategoryByNameAndUsername(String name, String username) {
 		return this.categorieRepository.getOneByNameAndUser_username(name, username);
+	}
+	
+	@Override
+	public Category setCategory(String categoryName, String username) {
+		Category category = getCategoryByNameAndUsername(categoryName, username);
+		 if (category == null) {
+			 category = new Category();
+			 category.setName(categoryName);
+			 category.setUser(userRepository.findOneByUsername(username));
+			 save(category);
+			 category = getCategoryByNameAndUsername(categoryName, username);
+		 }
+		 return category;
 	}
 
 }

@@ -112,4 +112,9 @@ public class DefaultFigureService implements FigureService {
 		List<Figure> figureList = this.figureRepository.findByFirstNameAndLastNameAndBirthDate_yearAndUser_username(firstName, lastName, year, username);
 		return(figureList!=null&&!figureList.isEmpty());
 	}
+	
+	@Override
+	public List<Figure> getFiguresByUsernameAndIds(String username, List<Long> ids){
+		return this.figureRepository.findByUser_usernameAndIdFigureIn(username, ids);
+	}
 }

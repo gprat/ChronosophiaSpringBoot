@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.webapp.site.entities.City;
 import com.webapp.site.entities.Country;
+import com.webapp.site.entities.User;
 import com.webapp.site.repositories.CityRepository;
 import com.webapp.site.repositories.CountryRepository;
 
@@ -102,6 +104,26 @@ public class DefaultCityService implements CityService {
 			}
 		}
 		return cityToReturn;
+	}
+	
+	@Override
+	public City setCity(JsonNode cityNode, User user) {
+		City city = new City();
+		city.setName(cityNode.path("name").asText());
+		setCountry(city, cityNode.path("country").asText());
+		city.setLatitude(new BigDecimal(cityNode.path("latitude").asDouble()));
+		city.setLongitude(new BigDecimal(cityNode.path("longitude").asDouble()));
+		city.setUser(user);
+		city.setDescription(cityNode.path("description").asText());
+		City cityTemp = GetCityByDetails(city);
+		if(cityTemp!=null) {
+			city=cityTemp;
+		}
+		else {
+			save(city);
+			GetCityByDetails(city);
+		}
+		return city;
 	}
 
 }

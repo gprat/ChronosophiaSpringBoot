@@ -4,7 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.webapp.site.entities.City;
+import com.webapp.site.entities.User;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -38,4 +40,6 @@ public interface CityService {
 	List<City> getCitiesByEventYear(String username, int yearStart, int yearEnd);
 
 	City GetCityByDetails(City city);
+
+	City setCity(JsonNode cityNode, User user);
 }

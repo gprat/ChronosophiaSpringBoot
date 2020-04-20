@@ -1,5 +1,8 @@
 package com.webapp.site;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -14,12 +19,17 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webapp.site.entities.Category;
 import com.webapp.site.entities.Chronology;
@@ -45,7 +55,7 @@ public class ChronologyController {
 		return "chronology/list";
 	}
 	
-	@RequestMapping(value = "/{id}", params ="view", method = RequestMethod.POST)
+	@RequestMapping(value = "/id/{id}", params ="view", method = RequestMethod.POST)
 	public String view(@PathVariable("id") long id, Model model, Principal principal){
 		try {
 			Chronology chronology = this.chronologyService.getChronology(id, principal.getName());
@@ -160,7 +170,7 @@ public class ChronologyController {
 		return "redirect:list";
 	}
 	
-	@RequestMapping(value = "/{id}", params ="update", method = RequestMethod.POST)
+	@RequestMapping(value = "/id/{id}", params ="update", method = RequestMethod.POST)
 	public String ShowUpdateChronologyForm(@PathVariable("id") long id, Model model, Principal principal) {
 		ChronologyForm chronologyForm = this.chronologyService.getChronologyForm(id,principal.getName() );
 		model.addAttribute("chronologyForm", chronologyForm);
@@ -181,9 +191,79 @@ public class ChronologyController {
 		return "chronology/chronologyForm";
 	}
 	
-	@RequestMapping(value = "/{id}", params ="delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/id/{id}", params ="delete", method = RequestMethod.POST)
 	public View deleteChronology(@PathVariable("id") long id, Principal principal){
 		this.chronologyService.delete(id, principal.getName());
 		return new RedirectView("/chronology/list", true, false);
+	}
+	
+	@RequestMapping(value = {"export"}, method = RequestMethod.GET)
+	public String export(Map<String, Object> model, Principal principal){
+		model.put("chronologies", chronologyService.getChronologiesByUsername(principal.getName()));
+		return "chronology/export";
+	}
+	
+	@PostMapping("/download")
+	 public @ResponseBody void downloadFile(HttpServletRequest req ,HttpServletResponse resp, Principal principal) {
+		String[] selectedIds = req.getParameterValues("selectedIds");
+		List<Long> idList = new ArrayList();
+		if(selectedIds!=null&&selectedIds.length>0) {
+			new ArrayList<String>(Arrays.asList(selectedIds)).forEach(idChronology->idList.add(Long.parseLong(idChronology)));
+			String downloadFileName= "download.json";
+			String downloadStringContent = "";
+			try {
+				downloadStringContent = objectMapper.writeValueAsString(this.chronologyService.getChronologiesByUsernameAndIds(principal.getName(),idList));
+			} catch (JsonProcessingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				OutputStream out = resp.getOutputStream();
+				resp.setContentType("text/plain; charset=utf-8");
+				resp.addHeader("Content-Disposition","attachment; filename=\"" + downloadFileName + "\"");
+				out.write(downloadStringContent.getBytes(Charset.forName("UTF-8")));
+				out.flush();
+				out.close();
+
+			} catch (IOException e) {
+				
+			}
+		}
+	 }
+	
+	@PostMapping("/upload")
+	 public String singleFileUpload(@RequestParam("file") MultipartFile file, Principal principal) {
+		 ObjectMapper mapper = new ObjectMapper();
+		 try {
+			JsonNode rootArray =  mapper.readTree(file.getInputStream());
+			for (JsonNode root : rootArray) {
+				Chronology chronology = new Chronology();
+				chronology.setName(root.path("name").asText());
+				JsonNode rootEventArray = root.path("eventsToImport");
+				int eventCount = rootEventArray.size();
+				if(!this.chronologyService.ExistChronology(chronology.getName(), eventCount, principal.getName())) {
+					chronology.setDescription(root.path("descritpion").asText());
+					chronology.setUrl(root.path("url").asText());
+					List<Event> eventList = new ArrayList();
+					for(JsonNode rootEvent : rootEventArray) { 
+						Event event = this.eventService.importEvent(rootEvent, principal.getName());
+						if(event!=null) {
+							eventList.add(event);
+						}
+					}
+					chronology.setEvents(eventList);
+					JsonNode categoryNode = root.path("category");
+					if(!categoryNode.isMissingNode()){
+						chronology.setCategory(this.categoryService.setCategory(categoryNode.asText(),principal.getName()));
+					}
+					chronology.setUser(this.userService.findByUsername(principal.getName()));
+					this.chronologyService.save(chronology);
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect:list";
 	}
 }

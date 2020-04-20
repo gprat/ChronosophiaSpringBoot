@@ -28,35 +28,28 @@
 <body>
 <%@ include file="../navbar.jsp" %>
 <div class="container">
-	<h3>Chronologies</h3>
-	
+	<h3>Personnages</h3>
+	<spring:url value="/figure/download" var="downloaddUrl" />
+	<form:form method="post" action="${downloaddUrl}" style="display: inline;">
 	<TABLE class="table table-bordered">
 		<TR>
+			<TH>Prénom</TH>
 			<TH>Nom</TH>
-			<TH>Opérations</TH>
+			<TH>Date de Naissance</TH>
+			<TH>Date de Mort</TH>
+			<TH>Personnages à Exporter</TH>
 		</TR>
-		<c:forEach items="${chronologies}" var="chronology">
+		<c:forEach items="${figures}" var="figure">
 			<TR>
-				<TD><c:out value="${chronology.name}"></c:out></TD>
-				<TD>
-					<spring:url value="/chronology/id/${chronology.idChronology}" var="chronologyUrl" />
-				  	<form:form method="post" action="${chronologyUrl}" style="display: inline;"> 
-				  	<input type="submit" value="Afficher" name="view" class="btn" />
-				  	<input type="submit" value="Mettre à jour" name="update" class="btn" /> 
-				  	<input type="submit" value="Supprimer" name="delete" class="btn" />
-				  	</form:form>
-				 </TD>
-			</TR>
-		</c:forEach>
-	</TABLE>
-	<spring:url value="/chronology/add" var="addUrl" />
-	<form:form method="post" action="${addUrl}" style="display: inline;"> 
-		<input type="submit" value="Créer une chronologie" class="btn" />
-	</form:form>
-	<spring:url value="/chronology/upload" var="uploadUrl" />
-	<form:form method="post" action="${uploadUrl}" enctype="multipart/form-data">
-    	<input type="file" name="file" class="btn" /><br/><br/>
-    	<input type="submit" value="Submit" class="btn" />
+				<TD><c:out value="${figure.firstName}"></c:out></TD>
+				<TD><c:out value="${figure.lastName}"></c:out></TD>
+				<TD><c:if test="${figure.birthDate!=null}"> <c:out value="${figure.birthDate.toString()}"></c:out> </c:if></TD>
+				<TD><c:if test="${figure.deathDate!=null}"> <c:out value="${figure.deathDate.toString()}"></c:out> </c:if></TD>
+					<td><input type="checkbox" name="selectedIds" value="${figure.idFigure}"></td>
+				</TR>
+			</c:forEach>
+		</TABLE> 
+		<input type="submit" value="Export" class="btn" />
 	</form:form>
 </div>
 </body>

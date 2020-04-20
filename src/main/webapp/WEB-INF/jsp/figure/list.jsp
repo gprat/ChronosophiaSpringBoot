@@ -66,7 +66,7 @@
 				<TD><c:if test="${figure.birthDate!=null}"> <c:out value="${figure.birthDate.toString()}"></c:out> </c:if></TD>
 				<TD><c:if test="${figure.deathDate!=null}"> <c:out value="${figure.deathDate.toString()}"></c:out> </c:if></TD>
 				<TD>
-					<spring:url value="/figure/${figure.idFigure}" var="figureUrl" />
+					<spring:url value="/figure/id/${figure.idFigure}" var="figureUrl" />
 				  	<form:form method="post" action="${figureUrl}" style="display: inline;"> 
 				  	<input type="submit" value="Afficher" name="view" class="btn" />
 				  	<input type="submit" value="Mettre à jour" name="update" class="btn" /> 

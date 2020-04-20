@@ -29,7 +29,7 @@ public interface EventService {
 	
 	List<Event> getEventsByUsername(String username);
 
-	boolean existsEvent(Date date, String name, User user);
+	Event existsEvent(Date date, String name, User user);
 
 	Event importEvent(JsonNode root, String username);
 

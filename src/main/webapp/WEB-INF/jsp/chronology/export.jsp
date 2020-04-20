@@ -29,34 +29,21 @@
 <%@ include file="../navbar.jsp" %>
 <div class="container">
 	<h3>Chronologies</h3>
-	
+	<spring:url value="/chronology/download" var="downloaddUrl" />
+	<form:form method="post" action="${downloaddUrl}" style="display: inline;">
 	<TABLE class="table table-bordered">
-		<TR>
-			<TH>Nom</TH>
-			<TH>Opérations</TH>
-		</TR>
-		<c:forEach items="${chronologies}" var="chronology">
 			<TR>
-				<TD><c:out value="${chronology.name}"></c:out></TD>
-				<TD>
-					<spring:url value="/chronology/id/${chronology.idChronology}" var="chronologyUrl" />
-				  	<form:form method="post" action="${chronologyUrl}" style="display: inline;"> 
-				  	<input type="submit" value="Afficher" name="view" class="btn" />
-				  	<input type="submit" value="Mettre à jour" name="update" class="btn" /> 
-				  	<input type="submit" value="Supprimer" name="delete" class="btn" />
-				  	</form:form>
-				 </TD>
+				<TH>Nom</TH>
+				<TH>Chronologies à exporter</TH>
 			</TR>
-		</c:forEach>
-	</TABLE>
-	<spring:url value="/chronology/add" var="addUrl" />
-	<form:form method="post" action="${addUrl}" style="display: inline;"> 
-		<input type="submit" value="Créer une chronologie" class="btn" />
-	</form:form>
-	<spring:url value="/chronology/upload" var="uploadUrl" />
-	<form:form method="post" action="${uploadUrl}" enctype="multipart/form-data">
-    	<input type="file" name="file" class="btn" /><br/><br/>
-    	<input type="submit" value="Submit" class="btn" />
+			<c:forEach items="${chronologies}" var="chronology">
+				<TR>
+					<TD><c:out value="${chronology.name}"></c:out></TD>
+					<td><input type="checkbox" name="selectedIds" value="${chronology.idChronology}"></td>
+				</TR>
+			</c:forEach>
+		</TABLE> 
+		<input type="submit" value="Export" class="btn" />
 	</form:form>
 </div>
 </body>

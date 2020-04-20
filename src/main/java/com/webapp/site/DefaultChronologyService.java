@@ -75,4 +75,24 @@ public class DefaultChronologyService implements ChronologyService {
 	public List<Chronology> getChronologiesByUsername(String username){
 		return chronologyRepository.findByUser_username(username);
 	}
+	
+	@Override
+	public boolean ExistChronology(String name, int size, String username) {
+		List<Chronology> chronologies = this.chronologyRepository.findByNameAndUser_username(name, username);
+		if(chronologies!=null&&!chronologies.isEmpty()) {
+			for(Chronology chrono : chronologies) {
+				if(chrono.getEvents().size()==size) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public List<Chronology> getChronologiesByUsernameAndIds(String username, List<Long> IdChronologies){
+		return this.chronologyRepository.findByUser_usernameAndIdChronologyIn(username, IdChronologies);
+	}
+	
+	
 }

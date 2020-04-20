@@ -1,9 +1,16 @@
 package com.webapp.site;
 
 import java.io.IOException;
+import java.security.Principal;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.webapp.site.entities.Chronology;
@@ -66,7 +73,14 @@ public class ChronologySerializer  extends StdSerializer<Chronology> {
 			jgen.writeEndObject();
 		}
 		jgen.writeEndArray();
+		jgen.writeFieldName("eventsToImport");
+		ObjectMapper mapper = (ObjectMapper) jgen.getCodec();
+		String stringValue = mapper.writeValueAsString(chronology.getEvents());
+		jgen.writeRawValue(stringValue);
+		if(chronology.getCategory()!=null) jgen.writeStringField("category", chronology.getCategory().getName());
+		jgen.writeStringField("name", chronology.getName());
+		jgen.writeStringField("description", chronology.getDescription());
+		jgen.writeStringField("url", chronology.getUrl());
 		jgen.writeEndObject();
 	}
-			
 }

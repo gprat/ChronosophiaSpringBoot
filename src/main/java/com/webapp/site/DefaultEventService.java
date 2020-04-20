@@ -135,9 +135,12 @@ public class DefaultEventService implements EventService {
 	}
 	
 	@Override
-	public boolean existsEvent(Date date, String name, User user) {
+	public Event existsEvent(Date date, String name, User user) {
 		List<Event> eventList = this.eventRepository.findByDateAndNameAndUser(date, name,user);
-		return(eventList!=null&&!eventList.isEmpty());
+		if(eventList!=null&&!eventList.isEmpty()) {
+			return eventList.get(0);
+		}
+		return null;
 	}
 	
 	@Override
@@ -148,45 +151,23 @@ public class DefaultEventService implements EventService {
 		JsonNode dateNode = root.path("date");
 		//TO DO - Verifier le comportement avec des valeurs nulles
 		event.setDate(this.dateService.setDate(dateNode.path("day").asInt(), dateNode.path("month").asInt(), dateNode.path("year").asInt()));
-		if(!existsEvent(event.getDate(), event.getName(), event.getUser())) {
+		Event eventExists = existsEvent(event.getDate(), event.getName(), event.getUser());
+		if(eventExists==null) {
 			List<Category> categoryList =  new ArrayList<>();
 			for(JsonNode categoryNode : root.path("categories")) {
 				String categoryName = categoryNode.path("name").asText();
-				 Category category = this.categoryService.getCategoryByNameAndUsername(categoryName, username);
-				 if (category == null) {
-					 category = new Category();
-					 category.setName(categoryName);
-					 category.setUser(event.getUser());
-					 this.categoryService.save(category);
-					 category = this.categoryService.getCategoryByNameAndUsername(categoryName, username);
-				 }
-				 categoryList.add(category);
+				 categoryList.add(this.categoryService.setCategory(categoryName, username));
 			}
 			event.setCategories(categoryList);
 			event.setDescription(root.path("description").asText());
 			event.setUrl(root.path("url").asText());
 			JsonNode cityNode = root.path("city");
 			if (!cityNode.isMissingNode()) {
-				City city = new City();
-				city.setName(cityNode.path("name").asText());
-				cityService.setCountry(city, cityNode.path("country").asText());
-				city.setLatitude(new BigDecimal(cityNode.findPath("latitude").asDouble()));
-				city.setLongitude(new BigDecimal(cityNode.findPath("longitude").asDouble()));
-				city.setUser(event.getUser());
-				city.setDescription(cityNode.findPath("description").asText());
-				City cityTemp = cityService.GetCityByDetails(city);
-				if(cityTemp!=null) {
-					city=cityTemp;
-				}
-				else {
-					cityService.save(city);
-					city=cityService.GetCityByDetails(city);
-				}
-				event.setCity(city);
+				event.setCity(this.cityService.setCity(cityNode, event.getUser()));
 			}
 			return save(event);
 		}
-		return null;
+		return eventExists;
 	}
 	
 }

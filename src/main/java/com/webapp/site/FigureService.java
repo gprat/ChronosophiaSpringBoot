@@ -24,4 +24,6 @@ public interface FigureService {
 	FigureForm getFigureForm(Long id, String username);
 
 	boolean existsFigure(String firstName, String lastName, int year, String username);
+
+	List<Figure> getFiguresByUsernameAndIds(String username, List<Long> ids);
 }

@@ -21,4 +21,6 @@ public interface CategoryService {
 	List<Category> getCategoriesByUsername(String username);
 
 	Category getCategoryByNameAndUsername(String name, String username);
+
+	Category setCategory(String categoryName, String username);
 }
