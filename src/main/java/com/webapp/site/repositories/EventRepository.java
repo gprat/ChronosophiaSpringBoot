@@ -18,4 +18,6 @@ public interface EventRepository extends CrudRepository<Event,Long>, JpaSpecific
 	List<Event> findByUser_username(String username);
 	
 	List<Event> findByDateAndNameAndUser(Date date, String name, User user);
+	
+	List<Event> findByUser_usernameAndIdEventIn(String username, List<Long> IdEvents);
 }

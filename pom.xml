@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.webapp</groupId>
 	<artifactId>chronosophia_springboot</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.6</version>
 	<name>chronosophia_springboot</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -99,10 +99,9 @@
 
 
 <dependency>
-		<groupId>com.github.cliftonlabs</groupId>
-		<artifactId>json-simple</artifactId>
-		<version>3.1.0</version>
-	</dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
 
 	</dependencies>
 

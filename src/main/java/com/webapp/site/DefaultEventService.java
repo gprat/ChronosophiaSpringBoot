@@ -170,4 +170,9 @@ public class DefaultEventService implements EventService {
 		return eventExists;
 	}
 	
+	@Override
+	public List<Event> getEventsByUsernameAndIds(String username, List<Long> IdEvents){
+		return this.eventRepository.findByUser_usernameAndIdEventIn(username, IdEvents);
+	}
+	
 }

@@ -69,7 +69,7 @@
 				<td><c:if test="${event.date!=null}"> <c:out value="${event.date.toString()}"></c:out> </c:if></td>
 				<td><c:if test="${event.city!=null}"> <c:out value="${event.city.toString()}"></c:out> </c:if></td>
 				<td>
-					<spring:url value="/event/${event.idEvent}" var="eventUrl" />
+					<spring:url value="/event/id/${event.idEvent}" var="eventUrl" />
 				  	<form:form method="post" action="${eventUrl}" style="display: inline;"> 
 				  	<!--<input type="submit" value="Afficher" name="view" class="btn" />  -->
 				  	<input type="submit" value="Mettre à jour" name="update" class="btn" /> 

@@ -33,4 +33,6 @@ public interface EventService {
 
 	Event importEvent(JsonNode root, String username);
 
+	List<Event> getEventsByUsernameAndIds(String username, List<Long> IdEvents);
+
 }

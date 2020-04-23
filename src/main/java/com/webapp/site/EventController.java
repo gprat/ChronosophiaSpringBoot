@@ -32,6 +32,7 @@ import com.webapp.site.entities.Figure;
 import com.webapp.site.entities.Role;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
@@ -92,7 +93,7 @@ public class EventController {
 		return "event/list";
 	}
 	
-	@RequestMapping(value = "/{id}", params ="update", method = RequestMethod.POST)
+	@RequestMapping(value = "/id/{id}", params ="update", method = RequestMethod.POST)
 	public String ShowUpdateEventForm(@PathVariable("id") long id, Model model, Principal principal) {
 		EventForm eventForm = this.eventService.getEventForm(id, principal.getName());
 		model.addAttribute("eventForm", eventForm);
@@ -171,33 +172,44 @@ public class EventController {
 	}
 	
 	
-	@RequestMapping(value = "/{id}", params ="delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/id/{id}", params ="delete", method = RequestMethod.POST)
 	public View deleteEvent(@PathVariable("id") long id, Principal principal){
 		this.eventService.delete(id, principal.getName());
 		return new RedirectView("/event/list", true, false);
 	}
 	
-	 @RequestMapping(value = "/download", method = RequestMethod.GET)
-	 public @ResponseBody 
-	 void downloadFile(HttpServletResponse resp, Principal principal) {
-	  String downloadFileName= "download.json";
-	  String downloadStringContent = "";
-		try {
-			downloadStringContent = objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName()));
-		} catch (JsonProcessingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	  try {
-	   OutputStream out = resp.getOutputStream();
-	   resp.setContentType("text/plain; charset=utf-8");
-	   resp.addHeader("Content-Disposition","attachment; filename=\"" + downloadFileName + "\"");
-	   out.write(downloadStringContent.getBytes(Charset.forName("UTF-8")));
-	   out.flush();
-	   out.close();
+	@RequestMapping(value = {"export"}, method = RequestMethod.GET)
+    public String export(Map<String, Object> model, Principal principal){
+		model.put("events",this.eventService.getEventsByUsername(principal.getName()) );
+		return "event/export";
+	}
+	
+	@PostMapping("/download")
+	 public @ResponseBody void downloadFile(HttpServletRequest req ,HttpServletResponse resp, Principal principal) {
+		String[] selectedIds = req.getParameterValues("selectedIds");
+		List<Long> idList = new ArrayList();
+		if(selectedIds!=null&&selectedIds.length>0) {
+			new ArrayList<String>(Arrays.asList(selectedIds)).forEach(idEvent->idList.add(Long.parseLong(idEvent)));
+			String downloadFileName= "download.json";
+			String downloadStringContent = "";
+			try {
+				downloadStringContent = objectMapper.writeValueAsString(this.eventService.getEventsByUsernameAndIds(principal.getName(),idList));
+			} catch (JsonProcessingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				OutputStream out = resp.getOutputStream();
+				resp.setContentType("text/plain; charset=utf-8");
+				resp.addHeader("Content-Disposition","attachment; filename=\"" + downloadFileName + "\"");
+				out.write(downloadStringContent.getBytes(Charset.forName("UTF-8")));
+				out.flush();
+				out.close();
 
-	  } catch (IOException e) {
-	  }
+			} catch (IOException e) {
+				
+			}
+		}
 	 }
 	 
 	 @PostMapping("/upload")
