@@ -8,8 +8,8 @@
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=myKey"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1">
 <meta name="_csrf" content="${_csrf.token}" />
 <meta name="_csrf_header" content="${_csrf.headerName}" />
 

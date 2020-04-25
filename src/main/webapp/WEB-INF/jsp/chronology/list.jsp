@@ -11,6 +11,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1">
 <title>Liste des Chronologies</title>
 
 <link rel="stylesheet"
@@ -52,11 +53,6 @@
 	<spring:url value="/chronology/add" var="addUrl" />
 	<form:form method="post" action="${addUrl}" style="display: inline;"> 
 		<input type="submit" value="Créer une chronologie" class="btn" />
-	</form:form>
-	<spring:url value="/chronology/upload" var="uploadUrl" />
-	<form:form method="post" action="${uploadUrl}" enctype="multipart/form-data">
-    	<input type="file" name="file" class="btn" /><br/><br/>
-    	<input type="submit" value="Submit" class="btn" />
 	</form:form>
 </div>
 </body>

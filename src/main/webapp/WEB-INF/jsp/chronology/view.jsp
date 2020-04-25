@@ -21,6 +21,8 @@
 <!-- Latest compiled JavaScript -->
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<meta name="viewport" content="initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
 <body>
 <%@ include file="../navbar.jsp" %>

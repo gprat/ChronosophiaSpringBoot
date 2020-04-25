@@ -26,10 +26,9 @@
 <spring:url value="/resources/css/jquery.flexdatalist.min.css" var="flexdatalistCss" />
 <link href="${flexdatalistCss}" rel="stylesheet" type="text/css">
 <script src="${flexdatalistJS}"></script>
-	<link href="${styleCss}" rel="stylesheet" /> 
-<link href="${normalizeCss}" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="${styleCss}" rel="stylesheet" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1">
 <style type="text/css">
 .nopadding {
 	padding: 0 !important;
@@ -49,32 +48,32 @@
 			action="${eventActionUrl}" class="form-horizontal">
 			<form:hidden path="id" />
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Nom de l'évènement : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Nom de l'évènement : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="name" class="form-control" placeholder="Nom"/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Description de
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Description de
 					l'évènement : </label>
-				<div class="col-sm-7">
+				<div class="col-sm-7 col-xs-8">
 					<form:textarea path="description" class="form-control" rows="8" placeholder="Description"/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Date de l'évènement :
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Date de l'évènement :
 				</label>
-				<div class="col-md-3 col-sm-4">
+				<div class="col-md-3 col-sm-4 col-xs-8">
 					<div class="row nopadding">
-						<div class="col-lg-5 col-sm-6 nopadding">
-							<div class="col-sm-6 nopadding">
+						<div class="col-lg-5 col-sm-6  nopadding">
+							<div class="col-xs-3 col-sm-6 nopadding">
 								<form:input path="day" class="form-control" placeholder="jj" maxlength="2" />
 							</div>
-							<div class="col-sm-6 nopadding">
+							<div class="col-xs-3  col-sm-6 nopadding">
 								<form:input path="month" class="form-control" placeholder="mm" maxlength="2" />
 							</div>
 						</div>
-						<div class="col-sm-3 nopadding">
+						<div class="col-xs-3 col-sm-4 nopadding">
 							<form:input path="year" class="form-control" placeholder="aaaa" maxlength="5"/>
 						</div>
 					</div>
@@ -82,21 +81,20 @@
 			</div>
 
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Catégories : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Catégories : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="categories" class="categories form-control" placeholder="Catégories" data-min-length='0' multiple='multiple'/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Ville : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Ville : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="idCity" class="cities form-control" placeholder="Villes" data-min-length='1'/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Url de
-					l'image : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Url de l'image : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="url" class="form-control" rows="8" placeholder="Url"/>
 				</div>
 			</div>

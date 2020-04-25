@@ -10,6 +10,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1">
 <title>Ajouter une ville</title>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -23,8 +24,7 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<spring:url value="/resources/css/style.css" var="styleCss" />
 <spring:url value="/resources/css/normalize.css" var="normalizeCss" />
-	<link href="${styleCss}" rel="stylesheet" /> 
-<link href="${normalizeCss}" rel="stylesheet"> 
+	<link href="${styleCss}" rel="stylesheet" />
 </head>
 <body>
 <%@ include file="../navbar.jsp" %>

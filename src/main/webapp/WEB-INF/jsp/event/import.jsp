@@ -31,8 +31,8 @@
 	var="flexdatalistCss" />
 <link href="${flexdatalistCss}" rel="stylesheet" type="text/css">
 <script src="${flexdatalistJS}"></script>
-<link href="${normalizeCss}" rel="stylesheet">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1">
 <title>Evènements à importer</title>
 </head>
 <body>

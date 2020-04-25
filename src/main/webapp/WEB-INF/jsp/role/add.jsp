@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1">
 <title>Ajouter une position</title>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -25,6 +26,7 @@
 <link href="${normalizeCss}" rel="stylesheet">
 </head>
 <body>
+<%@ include file="../navbar.jsp" %>
 <div class="container">
 	<div class="col-sm-offset-1 col-sm-9">
  		<h1>Ajouter une position</h1>

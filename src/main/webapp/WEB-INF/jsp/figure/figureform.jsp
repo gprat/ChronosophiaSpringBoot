@@ -20,14 +20,14 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1">
 <spring:url value="/resources/css/style.css" var="styleCss" />
 <spring:url value="/resources/css/normalize.css" var="normalizeCss" />
 <spring:url value="/resources/js/jquery.flexdatalist.js" var="flexdatalistJS" />
 <spring:url value="/resources/css/jquery.flexdatalist.min.css" var="flexdatalistCss" />
 <link href="${flexdatalistCss}" rel="stylesheet" type="text/css">
 <script src="${flexdatalistJS}"></script>
-	<link href="${styleCss}" rel="stylesheet" /> 
-<link href="${normalizeCss}" rel="stylesheet">
+	<link href="${styleCss}" rel="stylesheet" />
 <style type="text/css">
 .nopadding {
 	padding: 0 !important;
@@ -47,36 +47,36 @@
 			action="${figureActionUrl}" class="form-horizontal">
 			<form:hidden path="id" />
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Nom de la personnalité
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Nom de la personnalité
 					: </label>
-				<div class="col-sm-7">
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="lastName" class="form-control"
 						placeholder="Nom" />
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Prénom de la
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Prénom de la
 					personnalité : </label>
-				<div class="col-sm-7">
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="firstName" class="form-control"
 						placeholder="Prénom" />
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Date de naissance : </label>
-				<div class="col-md-3 col-sm-4">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Date de naissance : </label>
+				<div class="col-md-3 col-sm-4 col-xs-8">
 					<div class="row nopadding">
-						<div class="col-lg-5 col-sm-6 nopadding">
-							<div class="col-sm-6 nopadding">
+						<div class="col-lg-5 col-sm-6  nopadding">
+							<div class="col-sm-6 col-xs-3 nopadding">
 								<form:input path="dayOfBirth" class="form-control"
 									placeholder="jj" maxlength="2"/>
 							</div>
-							<div class="col-sm-6 nopadding">
+							<div class="col-sm-6 col-xs-3 nopadding">
 								<form:input path="monthOfBirth" class="form-control"
 									placeholder="mm" maxlength="2"/>
 							</div>
 						</div>
-						<div class="col-sm-3 nopadding">
+						<div class="col-sm-3 col-xs-3 nopadding">
 							<form:input path="yearOfBirth" class="form-control"
 								placeholder="aaaa" maxlength="5"/>
 						</div>
@@ -84,20 +84,20 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Date de mort : </label>
-				<div class="col-md-3 col-sm-4">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Date de mort : </label>
+				<div class="col-md-3 col-sm-4 col-xs-8">
 					<div class="row nopadding">
 						<div class="col-lg-5 col-sm-6 nopadding">
-							<div class="col-sm-6 nopadding">
+							<div class="col-sm-6 col-xs-3 nopadding">
 								<form:input path="dayOfDeath" class="form-control"
 									placeholder="jj" maxlength="2"/>
 							</div>
-							<div class="col-sm-6 nopadding">
+							<div class="col-sm-6 col-xs-3 nopadding">
 								<form:input path="monthOfDeath" class="form-control"
 									placeholder="mm" maxlength="2"/>
 							</div>
 						</div>
-						<div class="col-sm-3 nopadding">
+						<div class="col-sm-3  col-xs-3 nopadding">
 							<form:input path="yearOfDeath" class="form-control"
 								placeholder="aaaa" maxlength="5"/>
 						</div>
@@ -105,32 +105,32 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Evènements : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Evènements : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="events" class="events form-control" placeholder="Evènements" data-min-length='1' multiple='multiple'/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Catégories : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Catégories : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="categories" class="categories form-control" placeholder="Catégories" data-min-length='0' multiple='multiple'/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Rôles : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Rôles : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="roles" class="roles form-control" placeholder="Rôles" data-min-length='0' multiple='multiple'/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Biographie: </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Biographie: </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:textarea path="biography" class="form-control" placeholder="Biographie" rows="8" />
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Url de l'image : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Url de l'image : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="url" class="form-control" placeholder="Url" />
 					</div>
 			</div>

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +86,7 @@ public class ChronologyController {
 			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByUsername(principal.getName())));
 			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
 			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
+			model.put("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -100,6 +102,7 @@ public class ChronologyController {
 			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByUsername(principal.getName())));
 			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
 			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
+			model.put("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -145,6 +148,7 @@ public class ChronologyController {
 				model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByUsername(principal.getName())));
 				model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
 				model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
+				model.put("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}
@@ -162,15 +166,23 @@ public class ChronologyController {
 		}
 		chronology.setName(chronologyForm.name);
 		List<Event> eventList = new ArrayList<>();
-		if(chronologyForm.eventList!=null){
+		if(chronologyForm.eventList!=null&&!chronologyForm.eventList.isEmpty()){
 			new ArrayList<String>(Arrays.asList(chronologyForm.eventList.split(","))).forEach(idEvent->eventList.add(eventService.getEvent(Long.parseLong(idEvent),principal.getName())));
 			while (eventList.remove(null));
 		}
-		chronology.setEvents(eventList);
+		if(chronologyForm.events!=null&&!chronologyForm.events.isEmpty()){
+			new ArrayList<String>(Arrays.asList(chronologyForm.events.split(","))).forEach(idEvent->eventList.add(eventService.getEvent(Long.parseLong(idEvent),principal.getName())));
+			while (eventList.remove(null));
+		}
+		LinkedHashSet<Event> hashSet = new LinkedHashSet<Event>(eventList);
+		List<Event> eventListNoDuplicates = new ArrayList<Event>(hashSet); 
+		chronology.setEvents(eventListNoDuplicates);
 		chronology.setUrl(chronologyForm.url);
 		chronology.setDescription(chronologyForm.description);
 		chronology.setUser(this.userService.findByUsername(principal.getName()));
-		chronology.setCategory(categoryService.getCategory(Long.parseLong(chronologyForm.getCategory()), principal.getName()));
+		if(chronologyForm.getCategory()!=null&&!chronologyForm.getCategory().isEmpty()) {
+			chronology.setCategory(categoryService.getCategory(Long.parseLong(chronologyForm.getCategory()), principal.getName()));
+		}
 		chronologyService.save(chronology);
 		return "redirect:list";
 	}
@@ -190,6 +202,7 @@ public class ChronologyController {
 			model.addAttribute("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByUsername(principal.getName())));
 			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
 			model.addAttribute("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
+			model.addAttribute("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

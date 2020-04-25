@@ -61,7 +61,11 @@ public class DefaultChronologyService implements ChronologyService {
 			}
 			if(eventList!="") eventList.substring(1,eventList.length()-1);
 			chronologyForm.eventList=eventList;
-			chronologyForm.category=String.valueOf(chronology.getCategory().getIdCategory());
+			chronologyForm.events=eventList;
+			Category category = chronology.getCategory();
+			if(category!=null) {
+				chronologyForm.category=String.valueOf(category.getIdCategory());
+			}
 			chronologyForm.id=chronology.getIdChronology();
 			chronologyForm.name=chronology.getName();
 			chronologyForm.description=chronology.getDescription();

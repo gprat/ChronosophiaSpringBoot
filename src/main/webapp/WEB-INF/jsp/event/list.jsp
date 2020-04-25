@@ -31,8 +31,8 @@
 	var="flexdatalistCss" />
 <link href="${flexdatalistCss}" rel="stylesheet" type="text/css">
 <script src="${flexdatalistJS}"></script>
-<link href="${normalizeCss}" rel="stylesheet">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1">
 <title>Liste des évènements</title>
 </head>
 <body>
@@ -84,12 +84,6 @@
 	<form:form method="post" action="${addUrl}" style="display: inline;"> 
 		<input type="submit" value="Créer un évènement" class="btn" />
 	</form:form>
-	
-	<spring:url value="/event/upload" var="uploadUrl" />
-	<form:form method="post" action="${uploadUrl}" enctype="multipart/form-data">
-    <input type="file" name="file" class="btn" /><br/><br/>
-    <input type="submit" value="Submit" class="btn" />
-</form:form>
 
 <script type="text/javascript">
     var categoriesSource = ${categoriesJSON};

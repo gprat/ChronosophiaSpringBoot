@@ -23,8 +23,11 @@
 <spring:url value="/resources/css/normalize.css" var="normalizeCss" />
 	<link href="${styleCss}" rel="stylesheet" /> 
 <link href="${normalizeCss}" rel="stylesheet">
+<meta name="viewport" content="initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
+<%@ include file="../navbar.jsp" %>
 <div class="container">
 	<div class="col-sm-offset-1 col-sm-9">
  		<h1>Ajouter une catégorie</h1>

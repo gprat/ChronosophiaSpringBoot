@@ -116,8 +116,8 @@ public class EventController {
 		EventForm eventForm = new EventForm();
 		model.put("eventForm", eventForm);
 		try{
-			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
-			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
+			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
+			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

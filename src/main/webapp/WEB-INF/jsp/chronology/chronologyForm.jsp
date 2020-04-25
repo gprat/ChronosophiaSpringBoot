@@ -31,9 +31,8 @@
 	var="flexdatalistCss" />
 <link href="${flexdatalistCss}" rel="stylesheet" type="text/css">
 <script src="${flexdatalistJS}"></script>
-<link href="${normalizeCss}" rel="stylesheet">
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="${jqueryCss}" />
 <link rel="stylesheet" type="text/css" href="${styleCss}" />
@@ -48,39 +47,44 @@
 <%@ include file="../navbar.jsp" %>
 	<div class="container">
 		<div class="col-sm-offset-1 col-sm-9">
-			<h1>Ajouter un évènement</h1>
+			<h1>Ajouter une chronologie</h1>
 		</div>
-
+		<div class="hidden-xs">
 		<spring:url value="/chronology/filter" var="selectUrl" />
 		<form:form method="post" modelAttribute="selectEventForm"
 			action="${selectUrl}">
 
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Catégories : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Catégories : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="categories" class="categories form-control"  data-min-length='0' multiple='multiple'/>
 				</div>
 			</div>
 			
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Personnalités : </label>
-				<div class="col-sm-7">
-					<form:input path="figures" class="figures form-control"  data-min-length='0' multiple='multiple'/>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Villes : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Villes : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="cities" class="cities form-control"  data-min-length='0' multiple='multiple'/>
 				</div>
 			</div>
 			
+			<div class="form-group">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Personnalités : </label>
+				<div class="col-sm-7 col-xs-8">
+					<form:input path="figures" class="figures form-control"  data-min-length='0' multiple='multiple'/>
+				</div>
+			</div>
+			
+			
+			
+			
 			<form:hidden path="eventsToExclude" id="eventsToExclude" />
-		<div class="col-sm-offset-7 col-sm-5">	      
+			<br>
+		<div class="col-xs-offset-7 col-xs-5">	      
 		<input type="submit" value="Filtrer" class="btn btn-default" />
 		</div>
 		</form:form>
+		</div>
 
 		<spring:url value="/chronology/save" var="chronologyActionUrl" />
 		
@@ -91,35 +95,39 @@
 			<form:hidden path="eventList" id="selectedEventList" />
 			<form:hidden path="id" />
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Nom de la chronologie : </label>
-					<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Nom de la chronologie : </label>
+					<div class="col-sm-7 col-xs-8">
 					<form:input path="name" class="form-control" placeholder="Nom" />
 					</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Description de la chronologie : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Description de la chronologie : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:textarea path="description" class="form-control" placeholder="Description" rows="8" />
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Url de l'image : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Url de l'image : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="url" class="form-control" placeholder="Url" />
 					</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Catégorie : </label>
-				<div class="col-sm-7">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Catégorie : </label>
+				<div class="col-sm-7 col-xs-8">
 					<form:input path="category" class="category form-control" placeholder="Catégories" data-min-length='0'/>
 				</div>
 			</div>
-			<input type="submit" value="Sauver" class="btn btn-default" /> 
-			<input type="reset" value="Reinitialiser" class="btn btn-default" />
 			
-			<div class="col-xs-12" style="height:30px;"></div>
 			
-			<div id="fieldChooser" class="form-control">
+			<div class="form-group visible-xs">
+				<label class="control-label col-md-3 col-sm-4 col-xs-4">Evènements : </label>
+				<div class="col-sm-7 col-xs-8">
+					<form:input path="events" class="events form-control" placeholder="Evènements" data-min-length='1' multiple='multiple'/>
+				</div>
+			</div>
+			
+			<div id="fieldChooser" class="form-control hidden-xs">
 				<div id="sourceFields">
 					<c:forEach items="${AvailableEventList}" var="event">
 						<div id="${event.getIdEvent()}">${event.getName()}</div>
@@ -131,6 +139,9 @@
 					</c:forEach>
 				</div>
 			</div>
+			
+		<input type="submit" value="Sauver" class="btn btn-default" /> 
+			<input type="reset" value="Reinitialiser" class="btn btn-default" />	
 			
 		</form:form>
 
@@ -156,6 +167,17 @@
 	</script>
 	
 	<script type="text/javascript">
+	var eventsSource = ${eventsJSON};
+    $('.events').flexdatalist({
+    	minLength: 1,
+    	searchIn: ['name'],
+    	selectionRequired: true,
+    	valueProperty: 'idEvent',
+        visibleProperties: ["name", "eventyear"],
+        textProperty: '{name}, {eventyear}',
+        data: eventsSource
+   });
+	
     var figuresSource = ${figuresJSON};
     $('.figures').flexdatalist({
     	minLength: 0,
@@ -198,6 +220,8 @@
         textProperty: '{name}',
         data: citiesSource
    });
+    
+    
     </script>
 </body>
 </html>

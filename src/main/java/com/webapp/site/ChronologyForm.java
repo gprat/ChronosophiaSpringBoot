@@ -13,6 +13,8 @@ public class ChronologyForm {
 	String category;
 	
 	String eventList;
+	
+	String events;
 
 	String description;
 	
@@ -64,6 +66,14 @@ public class ChronologyForm {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public String getEvents() {
+		return events;
+	}
+
+	public void setEvents(String events) {
+		this.events = events;
 	}
 	
 	
