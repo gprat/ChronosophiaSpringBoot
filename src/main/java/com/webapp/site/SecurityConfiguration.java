@@ -45,10 +45,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         filter.setEncoding("UTF-8");
         filter.setForceEncoding(true);
         http.requiresChannel().requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null).requiresSecure();
-        http.authorizeRequests().antMatchers("/","/chronosophia/**/list","/chronosophia/**/view","/chronosophia/**/add","/chronosophia/**/update","/**/delete","/chronosophia/**/upload")
+        http.authorizeRequests().antMatchers("/","/**/list","/**/view","/**/add","/**/update","/**/delete","/**/upload","/**/import","/**/export","/**/download","/**/id/**", "/**/save", "/**/add", "/**/filter","/**/logout")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_DBA')")
-                .antMatchers("/newuser/**", "/delete-user-*").access("hasRole('ROLE_ADMIN')").antMatchers("/edit-user-*", "/list")
-                .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DBA')").antMatchers("/create-user").permitAll().and().formLogin().loginPage("/login").permitAll();
+                .antMatchers("/newuser/**", "/delete-user-*").access("hasRole('ROLE_ADMIN')").antMatchers("/edit-user-*", "/userlist")
+                .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DBA')").antMatchers("/create-user","/resources/**").permitAll().and().formLogin().loginPage("/login").permitAll().and().authorizeRequests().antMatchers("/**").access("hasRole('ROLE_ADMIN')");
     }
  
     @Bean

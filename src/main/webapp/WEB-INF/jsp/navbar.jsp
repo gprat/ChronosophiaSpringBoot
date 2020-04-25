@@ -13,7 +13,7 @@
 <spring:url value="/category/list" var="categoryUrl" />
 <spring:url value="/role/list" var="roleUrl" />
 <spring:url value="/logout" var="logoutUrl" />
-<spring:url value="/list" var="userListUrl" />
+<spring:url value="/userlist" var="userListUrl" />
 <nav class="navbar navbar-inverse">  
   <div class="container-fluid">  
     <div class="navbar-header">  

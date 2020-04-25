@@ -23,8 +23,12 @@ public class DefaultRoleService implements RoleService {
 	}
 
 	@Override
-	public Role getRole(long id) {
-		return roleRepository.findById(id).get();
+	public Role getRole(long id, String username) {
+		Role role = roleRepository.findById(id).get();
+		if(role.getUser().getUsername().equals(username)) {
+			return role;
+		}
+		return null;
 	}
 
 	@Override
@@ -34,8 +38,8 @@ public class DefaultRoleService implements RoleService {
 
 	@Override
 	public void delete(long id, String username) {
-		Role role = getRole(id);
-		if(role.getUser().getUsername().equals(username)) {
+		Role role = getRole(id, username);
+		if(role!=null) {
 			roleRepository.deleteById(id);
 		}
 	}

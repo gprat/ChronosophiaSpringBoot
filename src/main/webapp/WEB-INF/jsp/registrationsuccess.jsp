@@ -19,7 +19,7 @@
 		</div>
 		
 		<span class="well floatRight">
-			Go to <a href="<c:url value='event/list' />">Evènements</a>
+			Go to <a href="<c:url value='/' />">Connexion</a>
 		</span>
 	</div>
 </body>

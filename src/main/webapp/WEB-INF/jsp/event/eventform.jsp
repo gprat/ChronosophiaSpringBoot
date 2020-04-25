@@ -62,12 +62,6 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-3 col-sm-4">Personnalités : </label>
-				<div class="col-sm-7">
-					<form:input path="figures" class="figures form-control" placeholder="Personnalités" data-min-length='1' multiple='multiple'/>
-				</div>
-			</div>
-			<div class="form-group">
 				<label class="control-label col-md-3 col-sm-4">Date de l'évènement :
 				</label>
 				<div class="col-md-3 col-sm-4">
@@ -115,17 +109,6 @@
 		</form:form>
 	</div>
     <script type="text/javascript">
-    var figuresSource = ${figuresJSON};
-    $('.figures').flexdatalist({
-    	minLength: 1,
-    	searchIn: ['firstName','lastName'],
-    	selectionRequired: true,
-    	valueProperty: 'idFigure',
-        visibleProperties: ["firstName","lastName","figureDates"],
-        textProperty: '{firstName} {lastName}',
-        data: figuresSource
-   });
-    
     var categoriesSource = ${categoriesJSON};
     $('.categories').flexdatalist({
     	minLength: 0,

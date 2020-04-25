@@ -105,6 +105,12 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label class="control-label col-md-3 col-sm-4">Evènements : </label>
+				<div class="col-sm-7">
+					<form:input path="events" class="events form-control" placeholder="Evènements" data-min-length='1' multiple='multiple'/>
+				</div>
+			</div>
+			<div class="form-group">
 				<label class="control-label col-md-3 col-sm-4">Catégories : </label>
 				<div class="col-sm-7">
 					<form:input path="categories" class="categories form-control" placeholder="Catégories" data-min-length='0' multiple='multiple'/>
@@ -138,6 +144,17 @@
 	</div>
 	
 	<script type="text/javascript">
+	var eventsSource = ${eventsJSON};
+    $('.events').flexdatalist({
+    	minLength: 1,
+    	searchIn: ['name'],
+    	selectionRequired: true,
+    	valueProperty: 'idEvent',
+        visibleProperties: ["name", "eventyear"],
+        textProperty: '{name}, {eventyear}',
+        data: eventsSource
+   });
+	
 	  var categoriesSource = ${categoriesJSON};
 	    $('.categories').flexdatalist({
 	    	minLength: 0,

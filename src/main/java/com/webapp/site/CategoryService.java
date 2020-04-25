@@ -12,7 +12,7 @@ public interface CategoryService {
 	@Transactional
 	List<Category> getAllCategories();
 	
-	Category getCategory(long id);
+	Category getCategory(long id, String username);
 	
 	void save(Category category);
 	

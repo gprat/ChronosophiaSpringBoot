@@ -64,12 +64,6 @@ public class DefaultEventService implements EventService {
 			if(event.getCity()!=null){
 				eventForm.idCity=String.valueOf(event.getCity().getIdCity());
 			}
-			String figureList="";
-			for(Figure f : event.getFigures()){
-				figureList=figureList.concat(String.valueOf(f.getIdFigure())+",");
-			}
-			if(figureList!="") figureList.substring(1,figureList.length()-1);
-			eventForm.figures=figureList;
 			String categoryList="";
 			for(Category c: event.getCategories()){
 				categoryList=categoryList.concat(String.valueOf(c.getIdCategory())+",");

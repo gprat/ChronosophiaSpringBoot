@@ -1,9 +1,12 @@
 package com.webapp.site;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +20,7 @@ import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +52,7 @@ public class ChronologyController {
 	@Inject EventService eventService;
 	@Inject UserService userService;
 	@Inject ObjectMapper objectMapper;
+	@Inject AmazonClient amazonClient;
 	
 	@RequestMapping(value = {"list"}, method = RequestMethod.GET)
 	public String list(Map<String, Object> model, Principal principal){
@@ -165,7 +170,7 @@ public class ChronologyController {
 		chronology.setUrl(chronologyForm.url);
 		chronology.setDescription(chronologyForm.description);
 		chronology.setUser(this.userService.findByUsername(principal.getName()));
-		chronology.setCategory(categoryService.getCategory(Long.parseLong(chronologyForm.getCategory())));
+		chronology.setCategory(categoryService.getCategory(Long.parseLong(chronologyForm.getCategory()), principal.getName()));
 		chronologyService.save(chronology);
 		return "redirect:list";
 	}
@@ -206,10 +211,13 @@ public class ChronologyController {
 	@PostMapping("/download")
 	 public @ResponseBody void downloadFile(HttpServletRequest req ,HttpServletResponse resp, Principal principal) {
 		String[] selectedIds = req.getParameterValues("selectedIds");
+		String description = req.getParameter("description");
 		List<Long> idList = new ArrayList();
 		if(selectedIds!=null&&selectedIds.length>0) {
 			new ArrayList<String>(Arrays.asList(selectedIds)).forEach(idChronology->idList.add(Long.parseLong(idChronology)));
-			String downloadFileName= "download.json";
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyHHmmss");  
+			LocalDateTime now = LocalDateTime.now();  
+			String downloadFileName= "chronology_"+principal.getName()+"_"+dtf.format(now)+".json";
 			String downloadStringContent = "";
 			try {
 				downloadStringContent = objectMapper.writeValueAsString(this.chronologyService.getChronologiesByUsernameAndIds(principal.getName(),idList));
@@ -217,53 +225,55 @@ public class ChronologyController {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			try {
-				OutputStream out = resp.getOutputStream();
-				resp.setContentType("text/plain; charset=utf-8");
-				resp.addHeader("Content-Disposition","attachment; filename=\"" + downloadFileName + "\"");
-				out.write(downloadStringContent.getBytes(Charset.forName("UTF-8")));
-				out.flush();
-				out.close();
-
-			} catch (IOException e) {
-				
-			}
+			amazonClient.uploadJSON(downloadFileName, downloadStringContent, description, principal.getName());
 		}
 	 }
 	
+	@GetMapping("/import")
+	public String importView(Map<String, Object> model) {
+		model.put("contents", this.amazonClient.listofJson("chronology"));
+		return "chronology/import";
+	}
+	
 	@PostMapping("/upload")
-	 public String singleFileUpload(@RequestParam("file") MultipartFile file, Principal principal) {
-		 ObjectMapper mapper = new ObjectMapper();
-		 try {
-			JsonNode rootArray =  mapper.readTree(file.getInputStream());
-			for (JsonNode root : rootArray) {
-				Chronology chronology = new Chronology();
-				chronology.setName(root.path("name").asText());
-				JsonNode rootEventArray = root.path("eventsToImport");
-				int eventCount = rootEventArray.size();
-				if(!this.chronologyService.ExistChronology(chronology.getName(), eventCount, principal.getName())) {
-					chronology.setDescription(root.path("descritpion").asText());
-					chronology.setUrl(root.path("url").asText());
-					List<Event> eventList = new ArrayList();
-					for(JsonNode rootEvent : rootEventArray) { 
-						Event event = this.eventService.importEvent(rootEvent, principal.getName());
-						if(event!=null) {
-							eventList.add(event);
+	 public String importSelectedFiles(HttpServletRequest req, Principal principal) {
+		String[] selectedFilenames = req.getParameterValues("selectedFilenames");
+		 for(String filename : selectedFilenames) {
+			 InputStream input = amazonClient.getFile(filename);
+			 if(input!=null) {
+				 ObjectMapper mapper = new ObjectMapper();
+				 try {
+					JsonNode rootArray =  mapper.readTree(input);
+					for (JsonNode root : rootArray) {
+						Chronology chronology = new Chronology();
+						chronology.setName(root.path("name").asText());
+						JsonNode rootEventArray = root.path("eventsToImport");
+						int eventCount = rootEventArray.size();
+						if(!this.chronologyService.ExistChronology(chronology.getName(), eventCount, principal.getName())) {
+							chronology.setDescription(root.path("descritpion").asText());
+							chronology.setUrl(root.path("url").asText());
+							List<Event> eventList = new ArrayList();
+							for(JsonNode rootEvent : rootEventArray) { 
+								Event event = this.eventService.importEvent(rootEvent, principal.getName());
+								if(event!=null) {
+									eventList.add(event);
+								}
+							}
+							chronology.setEvents(eventList);
+							JsonNode categoryNode = root.path("category");
+							if(!categoryNode.isMissingNode()){
+								chronology.setCategory(this.categoryService.setCategory(categoryNode.asText(),principal.getName()));
+							}
+							chronology.setUser(this.userService.findByUsername(principal.getName()));
+							this.chronologyService.save(chronology);
 						}
 					}
-					chronology.setEvents(eventList);
-					JsonNode categoryNode = root.path("category");
-					if(!categoryNode.isMissingNode()){
-						chronology.setCategory(this.categoryService.setCategory(categoryNode.asText(),principal.getName()));
-					}
-					chronology.setUser(this.userService.findByUsername(principal.getName()));
-					this.chronologyService.save(chronology);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			 }
+		 }
 		return "redirect:list";
 	}
 }

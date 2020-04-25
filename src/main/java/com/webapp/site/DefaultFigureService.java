@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.webapp.site.entities.Category;
+import com.webapp.site.entities.Event;
 import com.webapp.site.entities.Figure;
 import com.webapp.site.entities.Role;
 import com.webapp.site.repositories.FigureRepository;
@@ -72,6 +73,12 @@ public class DefaultFigureService implements FigureService {
 			}
 			if(categoryList!="") categoryList.substring(1,categoryList.length()-1);
 			figureForm.categories=categoryList;
+			String eventList="";
+			for(Event e: figure.getEvents()){
+				eventList=eventList.concat(String.valueOf(e.getIdEvent())+",");
+			}
+			if(eventList!="") eventList.substring(1,categoryList.length()-1);
+			figureForm.events=eventList;
 			String roleList="";
 			for(Role r: figure.getRoles()){
 				roleList=roleList.concat(String.valueOf(r.getIdRole())+",");

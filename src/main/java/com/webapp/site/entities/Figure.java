@@ -72,7 +72,10 @@ public class Figure implements Serializable {
 	private List<Category> categories;
 
 	//bi-directional many-to-many association to Event
-	@ManyToMany(mappedBy="figures", fetch = FetchType.EAGER)
+	@JoinTable(name = "figure_event", joinColumns = {
+	        @JoinColumn(name = "idFigure", referencedColumnName = "idFigure")}, inverseJoinColumns = {
+	        @JoinColumn(name = "idEvent", referencedColumnName = "idEvent")})
+	@ManyToMany
 	private List<Event> events;
 
 	//bi-directional many-to-many association to Role

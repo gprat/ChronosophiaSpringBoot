@@ -30,8 +30,12 @@ public class DefaultCategoryService implements CategoryService {
 	}
 
 	@Override
-	public Category getCategory(long id) {
-		return categorieRepository.findById(id).get();
+	public Category getCategory(long id, String username) {
+		Category category = categorieRepository.findById(id).get();
+		if(category.getUser().getUsername().equals(username)) {
+			return category;
+		}
+		return null;
 	}
 
 	@Override
@@ -41,8 +45,8 @@ public class DefaultCategoryService implements CategoryService {
 
 	@Override
 	public void delete(long id, String username) {
-		Category category = getCategory(id);
-		if(category.getUser().getUsername().equals(username)) {
+		Category category = getCategory(id, username);
+		if(category!=null) {
 			categorieRepository.deleteById(id);
 		}
 	}

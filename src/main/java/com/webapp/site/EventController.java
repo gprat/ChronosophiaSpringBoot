@@ -39,11 +39,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,6 +63,7 @@ public class EventController {
 	@Inject CategoryService categoryService;
 	@Inject CityService cityService;
 	@Inject ObjectMapper objectMapper;
+	@Inject AmazonClient amazonClient;
 	
 	@RequestMapping(value = {"list"}, method = RequestMethod.GET)
     public String list(Map<String, Object> model, Principal principal){
@@ -112,7 +116,6 @@ public class EventController {
 		EventForm eventForm = new EventForm();
 		model.put("eventForm", eventForm);
 		try{
-			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByUsername(principal.getName())));
 			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
 			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
 		} catch (JsonProcessingException e) {
@@ -126,7 +129,6 @@ public class EventController {
 		if(bindingResult.hasErrors()){
 			model.put("eventForm", eventForm);
 			try{
-				model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByUsername(principal.getName())));
 				model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
 				model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
 			} catch (JsonProcessingException e) {
@@ -152,14 +154,9 @@ public class EventController {
 		event.setDescription(eventForm.description);
 		event.setUser(this.userService.findByUsername(principal.getName()));
 		if(eventForm.categories!=null&&eventForm.categories!=""){
-			new ArrayList<String>(Arrays.asList(eventForm.categories.split(","))).forEach(idCategory->categoryList.add(categoryService.getCategory(Long.parseLong(idCategory))));
-		}
-		if(eventForm.figures!=null&&eventForm.figures!="") {
-			new ArrayList<String>(Arrays.asList(eventForm.figures.split(","))).forEach(idFigure->figureList.add(figureService.getFigure(Long.parseLong(idFigure),principal.getName())));
-			while(figureList.remove(null));
+			new ArrayList<String>(Arrays.asList(eventForm.categories.split(","))).forEach(idCategory->categoryList.add(categoryService.getCategory(Long.parseLong(idCategory), principal.getName())));
 		}
 		event.setCategories(categoryList);
-		event.setFigures(figureList);
 		if(eventForm.idCity!=null&&eventForm.idCity!=""){
 			City city = this.cityService.getCity(Long.parseLong(eventForm.idCity),principal.getName());
 			if (city!=null) {
@@ -185,12 +182,15 @@ public class EventController {
 	}
 	
 	@PostMapping("/download")
-	 public @ResponseBody void downloadFile(HttpServletRequest req ,HttpServletResponse resp, Principal principal) {
+	 public String downloadFile(HttpServletRequest req, Principal principal) {
 		String[] selectedIds = req.getParameterValues("selectedIds");
+		String description = req.getParameter("description");
 		List<Long> idList = new ArrayList();
 		if(selectedIds!=null&&selectedIds.length>0) {
 			new ArrayList<String>(Arrays.asList(selectedIds)).forEach(idEvent->idList.add(Long.parseLong(idEvent)));
-			String downloadFileName= "download.json";
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyHHmmss");  
+			LocalDateTime now = LocalDateTime.now();  
+			String downloadFileName= "event_"+principal.getName()+"_"+dtf.format(now)+".json";
 			String downloadStringContent = "";
 			try {
 				downloadStringContent = objectMapper.writeValueAsString(this.eventService.getEventsByUsernameAndIds(principal.getName(),idList));
@@ -198,33 +198,36 @@ public class EventController {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			try {
-				OutputStream out = resp.getOutputStream();
-				resp.setContentType("text/plain; charset=utf-8");
-				resp.addHeader("Content-Disposition","attachment; filename=\"" + downloadFileName + "\"");
-				out.write(downloadStringContent.getBytes(Charset.forName("UTF-8")));
-				out.flush();
-				out.close();
-
-			} catch (IOException e) {
-				
-			}
+			amazonClient.uploadJSON(downloadFileName, downloadStringContent, description, principal.getName());
 		}
+		return "redirect:import";
 	 }
+	
+	@GetMapping("/import")
+	public String importView(Map<String, Object> model) {
+		model.put("contents", this.amazonClient.listofJson("event"));
+		return "event/import";
+	}
 	 
 	 @PostMapping("/upload")
-	 public String singleFileUpload(@RequestParam("file") MultipartFile file, Principal principal) {
-		 ObjectMapper mapper = new ObjectMapper();
-		 try {
-			JsonNode rootArray =  mapper.readTree(file.getInputStream());
-			for (JsonNode root : rootArray) {
-				this.eventService.importEvent(root, principal.getName());
-			}
-				
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	 public String importSelectedFiles(HttpServletRequest req, Principal principal) {
+		 String[] selectedFilenames = req.getParameterValues("selectedFilenames");
+		 for(String filename : selectedFilenames) {
+			 InputStream input = amazonClient.getFile(filename);
+			 if(input!=null) {
+				 ObjectMapper mapper = new ObjectMapper();
+				 try {
+					JsonNode rootArray =  mapper.readTree(input);
+					for (JsonNode root : rootArray) {
+						this.eventService.importEvent(root, principal.getName());
+					}
+						
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			 }
+		 }
 		 return "redirect:list";
 	 }
 }

@@ -2,6 +2,8 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
 
@@ -53,16 +55,16 @@
 						<td>${user.email}</td>
 						<td>${user.username}</td>
 					    <sec:authorize access="hasRole('ADMIN') or hasRole('DBA')">
-					    	<spring:url value="/edit-user-${user.username}" var="newuserUrl" />
+					    	<spring:url value="/edit-user-${user.username}" var="edituserurl" />
 							
-							<td><form:form method="get" action="${newuserUrl}" style="display: inline;"> 
+							<td><form:form method="get" action="${edituserurl}" style="display: inline;"> 
 								<input type="submit" value="Modifier" class="btn" />
 							</form:form></td>
 				        </sec:authorize>
 				        <sec:authorize access="hasRole('ADMIN')">
-				        	<spring:url value="/delete-user-${user.username}" var="newuserUrl" />
+				        	<spring:url value="/delete-user-${user.username}" var="deleteuserurl" />
 							
-							<td><form:form method="get" action="${newuserUrl}" style="display: inline;"> 
+							<td><form:form method="get" action="${deleteuserurl}" style="display: inline;"> 
 								<input type="submit" value="Supprimer" class="btn" />
 							</form:form></td>
         				</sec:authorize>

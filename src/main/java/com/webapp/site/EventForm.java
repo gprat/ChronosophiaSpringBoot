@@ -29,8 +29,6 @@ public class EventForm {
 	@NotNull
 	String description;
 	
-	String figures;
-	
 	String url;
 
 	public String getUrl() {
@@ -39,14 +37,6 @@ public class EventForm {
 
 	public void setUrl(String url) {
 		this.url = url;
-	}
-
-	public String getFigures() {
-		return figures;
-	}
-
-	public void setFigures(String figures) {
-		this.figures = figures;
 	}
 
 	public Long getId() {

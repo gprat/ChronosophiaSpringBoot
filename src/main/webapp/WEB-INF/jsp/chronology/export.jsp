@@ -43,6 +43,7 @@
 				</TR>
 			</c:forEach>
 		</TABLE> 
+		<input name="description" type="text" class="form-control" placeholder="Descritption"/> 
 		<input type="submit" value="Export" class="btn" />
 	</form:form>
 </div>

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,10 +36,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +59,7 @@ public class FigureController {
 	@Inject CategoryService categoryService;
 	@Inject EventService eventService;
 	@Inject ObjectMapper objectMapper;
+	@Inject AmazonClient amazonClient;
 	
 	
 	@RequestMapping(value = {"list"}, method = RequestMethod.GET)
@@ -81,6 +86,7 @@ public class FigureController {
 		try{
 			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
 			model.addAttribute("rolesJSON", objectMapper.writeValueAsString(this.roleService.getRolesByUsername(principal.getName())));
+			model.addAttribute("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -95,6 +101,7 @@ public class FigureController {
 		 try{
 				model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
 				model.put("rolesJSON", objectMapper.writeValueAsString(this.roleService.getRolesByUsername(principal.getName())));
+				model.put("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}
@@ -114,20 +121,25 @@ public class FigureController {
 		} 
 		List<Category> categoryList = new ArrayList<>();
 		List<Role>	roleList = new ArrayList<>();
+		List<Event>	eventList = new ArrayList<>();
 		figure.setFirstName(form.firstName);
 		figure.setLastName(form.lastName);
 		figure.setBirthDate(this.dateService.setDate(form.dayOfBirth, form.monthOfBirth, form.yearOfBirth));
 		figure.setDeathDate(this.dateService.setDate(form.dayOfDeath, form.monthOfDeath, form.yearOfDeath));
 		figure.setUser(this.userService.findByUsername(principal.getName()));
 		if(form.categories!=null){
-			new ArrayList<String>(Arrays.asList(form.categories.split(","))).forEach(idCategory->categoryList.add(categoryService.getCategory(Long.parseLong(idCategory))));
+			new ArrayList<String>(Arrays.asList(form.categories.split(","))).forEach(idCategory->categoryList.add(categoryService.getCategory(Long.parseLong(idCategory), principal.getName())));
+		}
+		if(form.events!=null){
+			new ArrayList<String>(Arrays.asList(form.events.split(","))).forEach(idEvent->eventList.add(eventService.getEvent(Long.parseLong(idEvent), principal.getName())));
 		}
 		if(form.roles!=null){
-			new ArrayList<String>(Arrays.asList(form.roles.split(","))).forEach(idRole->roleList.add(roleService.getRole(Long.parseLong(idRole))));
+			new ArrayList<String>(Arrays.asList(form.roles.split(","))).forEach(idRole->roleList.add(roleService.getRole(Long.parseLong(idRole),principal.getName())));
 		}
 		figure.setCategories(categoryList);
 		figure.setRoles(roleList);
 		figure.setBiography(form.biography);
+		figure.setEvents(eventList);
 		figure.setUrl(form.url);
 		this.figureService.save(figure);
 		return new RedirectView("/figure/list", true, false);
@@ -151,12 +163,15 @@ public class FigureController {
 	}
 	
 	@PostMapping("/download")
-	 public @ResponseBody void downloadFile(HttpServletRequest req ,HttpServletResponse resp, Principal principal) {
+	 public String downloadFile(HttpServletRequest req, Principal principal) {
 		String[] selectedIds = req.getParameterValues("selectedIds");
 		List<Long> idList = new ArrayList();
+		String description = req.getParameter("description");
 		if(selectedIds!=null&&selectedIds.length>0) {
 			new ArrayList<String>(Arrays.asList(selectedIds)).forEach(idFigure->idList.add(Long.parseLong(idFigure)));
-			String downloadFileName= "download.json";
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyHHmmss");  
+			LocalDateTime now = LocalDateTime.now();  
+			String downloadFileName= "figure_"+principal.getName()+"_"+dtf.format(now)+".json";
 			String downloadStringContent = "";
 			try {
 				downloadStringContent = objectMapper.writeValueAsString(this.figureService.getFiguresByUsernameAndIds(principal.getName(),idList));
@@ -164,74 +179,77 @@ public class FigureController {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			try {
-				OutputStream out = resp.getOutputStream();
-				resp.setContentType("text/plain; charset=utf-8");
-				resp.addHeader("Content-Disposition","attachment; filename=\"" + downloadFileName + "\"");
-				out.write(downloadStringContent.getBytes(Charset.forName("UTF-8")));
-				out.flush();
-				out.close();
-
-			} catch (IOException e) {
-				
-			}
+			amazonClient.uploadJSON(downloadFileName, downloadStringContent, description, principal.getName());
 		}
+		return "redirect:import";
 	 }
 	
+	@GetMapping("/import")
+	public String importView(Map<String, Object> model) {
+		model.put("contents", this.amazonClient.listofJson("figure"));
+		return "figure/import";
+	}
+	
 	@PostMapping("/upload")
-	 public String singleFileUpload(@RequestParam("file") MultipartFile file, Principal principal) {
-		 ObjectMapper mapper = new ObjectMapper();
-		 try {
-			JsonNode rootArray =  mapper.readTree(file.getInputStream());
-			for (JsonNode root : rootArray) {
-				Figure figure = new Figure();
-				figure.setFirstName(root.path("firstName").asText());
-				figure.setLastName(root.path("lastName").asText());
-				figure.setUser(this.userService.findByUsername(principal.getName()));
-				JsonNode birthDateNode = root.path("birthDate");
-				if (!birthDateNode.isMissingNode()) figure.setBirthDate(this.dateService.setDate(birthDateNode.path("day").asInt(), birthDateNode.path("month").asInt(), birthDateNode.path("year").asInt()));
-				JsonNode deathDateNode = root.path("deathDate");
-				if (!deathDateNode.isMissingNode()) figure.setDeathDate(this.dateService.setDate(deathDateNode.path("day").asInt(), deathDateNode.path("month").asInt(), deathDateNode.path("year").asInt()));
-				if(!this.figureService.existsFigure(figure.getFirstName(), figure.getLastName(), figure.getBirthDate().getYear(), principal.getName())) {
-					List<Event> eventList = new ArrayList();
-					for(JsonNode rootEvent : root.path("eventsToImport")) { 
-						Event event = this.eventService.importEvent(rootEvent, principal.getName());
-						if(event!=null) {
-							eventList.add(event);
+	 public String importSelectedFiles(HttpServletRequest req, Principal principal) {
+		String[] selectedFilenames = req.getParameterValues("selectedFilenames");
+		 for(String filename : selectedFilenames) {
+			 InputStream input = amazonClient.getFile(filename);
+			 if(input!=null) {
+				 ObjectMapper mapper = new ObjectMapper();
+				 try {
+					JsonNode rootArray =  mapper.readTree(input);
+					for (JsonNode root : rootArray) {
+						Figure figure = new Figure();
+						figure.setFirstName(root.path("firstName").asText());
+						figure.setLastName(root.path("lastName").asText());
+						figure.setUser(this.userService.findByUsername(principal.getName()));
+						JsonNode birthDateNode = root.path("birthDate");
+						if (!birthDateNode.isMissingNode()) figure.setBirthDate(this.dateService.setDate(birthDateNode.path("day").asInt(), birthDateNode.path("month").asInt(), birthDateNode.path("year").asInt()));
+						JsonNode deathDateNode = root.path("deathDate");
+						if (!deathDateNode.isMissingNode()) figure.setDeathDate(this.dateService.setDate(deathDateNode.path("day").asInt(), deathDateNode.path("month").asInt(), deathDateNode.path("year").asInt()));
+						if(!this.figureService.existsFigure(figure.getFirstName(), figure.getLastName(), figure.getBirthDate().getYear(), principal.getName())) {
+							List<Event> eventList = new ArrayList();
+							for(JsonNode rootEvent : root.path("eventsToImport")) { 
+								Event event = this.eventService.importEvent(rootEvent, principal.getName());
+								if(event!=null) {
+									eventList.add(event);
+								}
+							}
+							figure.setEvents(eventList);
+							List<Category> categoryList =  new ArrayList<>();
+							for(JsonNode categoryNode : root.path("categories")) {
+								String categoryName = categoryNode.path("name").asText();
+								categoryList.add(this.categoryService.setCategory(categoryName, principal.getName()));
+							}
+							figure.setCategories(categoryList);
+							List<Role> roleList =  new ArrayList<>();
+							for(JsonNode roleNode : root.path("roles")) {
+								String roleName = roleNode.path("name").asText();
+								 Role role = this.roleService.getRoleByNameAndUsername(roleName, principal.getName());
+								 if (role == null) {
+									 role = new Role();
+									 role.setName(roleName);
+									 role.setUser(figure.getUser());
+									 this.roleService.save(role);
+									 role = this.roleService.getRoleByNameAndUsername(roleName, principal.getName());
+								 }
+								 roleList.add(role);
+							}
+							figure.setRoles(roleList);
+							figure.setBiography(root.path("biography").asText());
+							figure.setUrl(root.path("url").asText());
+							this.figureService.save(figure);
 						}
+						
 					}
-					figure.setEvents(eventList);
-					List<Category> categoryList =  new ArrayList<>();
-					for(JsonNode categoryNode : root.path("categories")) {
-						String categoryName = categoryNode.path("name").asText();
-						categoryList.add(this.categoryService.setCategory(categoryName, principal.getName()));
-					}
-					figure.setCategories(categoryList);
-					List<Role> roleList =  new ArrayList<>();
-					for(JsonNode roleNode : root.path("roles")) {
-						String roleName = roleNode.path("name").asText();
-						 Role role = this.roleService.getRoleByNameAndUsername(roleName, principal.getName());
-						 if (role == null) {
-							 role = new Role();
-							 role.setName(roleName);
-							 role.setUser(figure.getUser());
-							 this.roleService.save(role);
-							 role = this.roleService.getRoleByNameAndUsername(roleName, principal.getName());
-						 }
-						 roleList.add(role);
-					}
-					figure.setRoles(roleList);
-					figure.setBiography(root.path("biography").asText());
-					figure.setUrl(root.path("url").asText());
-					this.figureService.save(figure);
+						
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
-			}
-				
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			 }
+		 }
 		 return "redirect:list";
 	 }
 	

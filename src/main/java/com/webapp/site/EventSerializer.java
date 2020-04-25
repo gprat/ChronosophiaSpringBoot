@@ -23,6 +23,7 @@ public class EventSerializer extends StdSerializer<Event> {
 	public void serialize(Event event, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
 		jgen.writeStartObject();
 		jgen.writeStringField("idEvent", String.valueOf(event.getIdEvent()));
+		jgen.writeStringField("eventyear", event.getDate().getYear().toString());
 		jgen.writeObjectFieldStart("date");
 		jgen.writeNumberField("year", event.getDate().getYear());
 		jgen.writeNumberField("month", event.getDate().getMonth());

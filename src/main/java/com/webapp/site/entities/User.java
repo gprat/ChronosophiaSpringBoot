@@ -37,11 +37,11 @@ public class User implements Serializable {
     private String email;
 	
 	//bi-directional many-to-one association to Event
-		@OneToMany(mappedBy="user")
+		@OneToMany(mappedBy="user", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Event> events;
 		
 	//bi-directional many-to-one association to Figure
-		@OneToMany(mappedBy="user")
+		@OneToMany(mappedBy="user", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Figure> figures;
 		
 	//bi-directional many-to-one association to Art
@@ -53,16 +53,16 @@ public class User implements Serializable {
 	private List<Almanac> almanacs;
 
 	//bi-directional many-to-one association to Chronology
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy="user", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Chronology> chronologies;
 	
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy="user", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<City> cities;
 	
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy="user", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Category> categories;
 	
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy="user", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Role> roles;
 
 	@ManyToMany(fetch = FetchType.EAGER)

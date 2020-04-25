@@ -30,6 +30,16 @@ public class FigureForm {
 	
 	String biography;
 	
+	String events;
+	
+	public String getEvents() {
+		return events;
+	}
+
+	public void setEvents(String events) {
+		this.events = events;
+	}
+
 	public Long getId() {
 		return id;
 	}

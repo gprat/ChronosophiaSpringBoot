@@ -83,10 +83,8 @@ public class Event implements Serializable {
 	
 	
 	//bi-directional many-to-many association to Figure
-	@JoinTable(name = "figure_event", joinColumns = {
-	        @JoinColumn(name = "idEvent", referencedColumnName = "idEvent")}, inverseJoinColumns = {
-	        @JoinColumn(name = "idFigure", referencedColumnName = "idFigure")})
-	@ManyToMany
+	
+	@ManyToMany(mappedBy="events", fetch = FetchType.EAGER)
 	private List<Figure> figures;
 
 	public Event() {

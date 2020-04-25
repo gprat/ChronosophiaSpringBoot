@@ -74,7 +74,7 @@ public class AppController {
     /**
      * This method will list all existing users.
      */
-    @RequestMapping(value = { "/list" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "/userlist" }, method = RequestMethod.GET)
     public String listUsers(ModelMap model) {
  
         List<User> users = userService.getAllUsers();
@@ -104,7 +104,7 @@ public class AppController {
             ModelMap model) {
  
         if (result.hasErrors()) {
-            return "registration";
+            return "signup";
         }
  
         /*
@@ -118,7 +118,7 @@ public class AppController {
         if(!userService.isUserUsernameUnique(user.getIdUser(), user.getUsername())){
             FieldError loginError =new FieldError("user","login","Le login entré n'est pas unique");
             result.addError(loginError);
-            return "registration";
+            return "signup";
         }
          
         userService.save(user);
@@ -225,7 +225,7 @@ public class AppController {
     @RequestMapping(value = { "/delete-user-{login}" }, method = RequestMethod.GET)
     public String deleteUser(@PathVariable String login) {
         userService.deleteUserByUsername(login);
-        return "redirect:/list";
+        return "redirect:/userlist";
     }
      
  
@@ -255,7 +255,7 @@ public class AppController {
         if (isCurrentAuthenticationAnonymous()) {
             return "login";
         } else {
-            return "redirect:/list";  
+            return "redirect:/userlist";  
         }
     }
  
