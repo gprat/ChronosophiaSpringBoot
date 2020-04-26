@@ -8,7 +8,7 @@ public class EventForm {
 
 	Long id;
 	
-	@NotNull
+	@NotBlank
 	String name;
 	
 	String idCity;

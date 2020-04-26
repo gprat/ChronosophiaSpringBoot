@@ -80,7 +80,7 @@ public class ChronologySerializer  extends StdSerializer<Chronology> {
 		if(chronology.getCategory()!=null) jgen.writeStringField("category", chronology.getCategory().getName());
 		jgen.writeStringField("name", chronology.getName());
 		jgen.writeStringField("description", chronology.getDescription());
-		jgen.writeStringField("url", chronology.getUrl());
+		if(chronology.getUrl()!=null)jgen.writeStringField("url", chronology.getUrl());
 		jgen.writeEndObject();
 	}
 }

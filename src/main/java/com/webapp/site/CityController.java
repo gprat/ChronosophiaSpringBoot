@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,14 +57,19 @@ public class CityController {
     }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
-    public View createCity(CityForm form, Principal principal)
+    public String createCity(@Valid CityForm form, BindingResult bindingResult, Map<String, Object> model, Principal principal)
     {
+    	if(bindingResult.hasErrors()) {
+    		model.put("cityForm", form);
+    		return "city/add";
+    	}
     	City city;
     	if(form.getIdCity()==null||form.getIdCity()==0){
     		city = new City();
     	}
     	else{
     		city=this.cityService.getCity(form.getIdCity(), principal.getName());
+    		if(city==null) city = new City();
     	}
     	if(city!=null) {
 	    	city.setName(form.getCityname());
@@ -74,7 +80,7 @@ public class CityController {
 	    	city.setDescription(form.getDescription());
 	        cityService.save(city);
     	}
-        return new RedirectView("/city/list", true, false);
+        return "redirect:list";
     }
     
     @RequestMapping(value = "view", method = RequestMethod.POST)

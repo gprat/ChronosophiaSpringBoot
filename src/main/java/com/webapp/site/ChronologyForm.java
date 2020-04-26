@@ -5,7 +5,7 @@ import javax.validation.constraints.*;
 
 public class ChronologyForm {
 
-	
+	@NotBlank
 	String name;
 	
 	Long id;
@@ -16,6 +16,7 @@ public class ChronologyForm {
 	
 	String events;
 
+	@NotBlank
 	String description;
 	
 	String url;

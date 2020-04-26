@@ -32,7 +32,7 @@
 </head>
 <body>
 <%@ include file="../navbar.jsp" %>
-<div class="container" height="40">
+<div class="container">
 <h3><c:out value="${city.toString()}"></c:out></h3>
 <div id="Timeline"></div>
     <script>

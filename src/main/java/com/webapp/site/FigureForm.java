@@ -2,22 +2,33 @@ package com.webapp.site;
 
 import java.util.List;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class FigureForm {
 	
 	Long id;
 
+	@NotBlank
 	String firstName;
 	
+	@NotBlank
 	String lastName;
 	
+	@Max(31)
 	Integer dayOfBirth;
 	
+	@Max(12)
 	Integer monthOfBirth;
 	
+	@NotNull
 	Integer yearOfBirth;
 	
+	@Max(31)
 	Integer dayOfDeath;
 	
+	@Max(12)
 	Integer monthOfDeath;
 	
 	Integer yearOfDeath;
@@ -28,6 +39,7 @@ public class FigureForm {
 	
 	String url;
 	
+	@NotBlank
 	String biography;
 	
 	String events;

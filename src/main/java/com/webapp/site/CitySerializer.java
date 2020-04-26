@@ -32,10 +32,16 @@ public class CitySerializer extends StdSerializer<City> {
 			jgen.writeStringField("countryName",countryName);
 			jgen.writeStringField("sCity", city.toString());
 			String description = "";
+			String eventCount = "";
 			if(city.getDescription()!= null) {
 				description = "<p>"+city.getDescription()+"</p>";
 			}
+			if(city.getEvents()!=null) {
+				eventCount = "<p>La ville compte "+city.getEvents().size()+" evènements</p>";
+			}
+			
 			jgen.writeStringField("infocontent", "<h3>"+city.getName()+"</h3>"+description+"</div>");
+			jgen.writeStringField("titleCity", "<h3>"+city.getName()+"</h3>"+eventCount+"</div>");
 			Integer eventNumber = 0;
 			if(city.getEvents()!=null ) {
 				eventNumber = city.getEvents().size();

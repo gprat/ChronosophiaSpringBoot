@@ -150,7 +150,8 @@
 		}
 		// [END region_geolocation]
 	</script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=myKey&signed_in=true&libraries=places&language=fr&callback=initAutocomplete"
+	<spring:eval expression="@environment.getProperty('MY_API_KEY')" var="myKey"/>
+	<script src="https://maps.googleapis.com/maps/api/js?key=${myKey}&signed_in=true&libraries=places&language=fr&callback=initAutocomplete"
         async defer></script>
 </div>
 </body>

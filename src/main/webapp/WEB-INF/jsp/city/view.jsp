@@ -6,8 +6,9 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
+<spring:eval expression="@environment.getProperty('MY_API_KEY')" var="myKey"/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=myKey"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=${myKey}"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="initial-scale=1">
 <meta name="_csrf" content="${_csrf.token}" />
@@ -29,18 +30,33 @@
 <body>
 <%@ include file="../navbar.jsp" %>
     <style>
+    	body, html {
+  			height: 100%;
+  			width: 100%;
+		}
+    
         #map-canvas {
-          height: 800px;
-          width: 1200px;
-          margin: 0px;
+          height: 60%;
+          width: 100%;
+          max-width: 1200px;
+          margin: auto;
           padding: 0px
         }
+        #city-canvas {
+          width: 100%;
+          max-width: 1200px;
+          margin: auto;
+        }
+        
     </style>
 <div id="map-canvas"></div>
 <div id="city-canvas"></div>
-<form:form method="post" style="display: inline;" id="form_id"> 
-				  	<input type="submit" value="Afficher" name="view" class="btn" />
+<form:form method="post" id="form_id">
+<div class="hidden" id="input_div">
+					<input type="submit" value="Afficher" name="view" class="btn" />
+</div> 
 </form:form>
+
 
 <script type="text/javascript">
 var json = ${citiesJSON}
@@ -78,10 +94,11 @@ var map;
 			
 			google.maps.event.addListener(marker, 'click', (function(marker, i) {
 	            return function() {
-	                infoWindow.setContent(json[i].infocontent);
+	                infoWindow.setContent(json[i].titleCity);
 	                infoWindow.open(map, marker);
 	                $('#city-canvas').html(json[i].infocontent);
-
+	                
+	                $("#input_div").removeClass('hidden').addClass('text-center'); 
 	                $("#form_id").attr("action", "/chronosophia/city/"+json[i].idCity); 
 	            }
 	        })(marker, i));

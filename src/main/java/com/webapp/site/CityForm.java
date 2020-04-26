@@ -2,18 +2,26 @@ package com.webapp.site;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class CityForm {
 
+	@NotBlank
 	private String cityname;
 	
+	@NotBlank
 	private String countryname;
 	
+	@NotNull
 	private BigDecimal latitude;
 	
+	@NotNull
 	private BigDecimal longitude;
 	
 	private Long idCity;
 	
+	@NotBlank
 	private String description;
 
 	public Long getIdCity() {

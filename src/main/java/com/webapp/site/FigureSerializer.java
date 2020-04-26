@@ -86,12 +86,12 @@ public class FigureSerializer extends StdSerializer<Figure> {
 			}
 			jgen.writeEndArray();
 			jgen.writeStringField("biography", figure.getBiography());
-			jgen.writeStringField("url", figure.getUrl());
+			if(figure.getUrl()!=null) jgen.writeStringField("url", figure.getUrl());
 			if(figure.getBirthDate()!=null) {
 				jgen.writeObjectFieldStart("birthDate");
 				jgen.writeNumberField("year", figure.getBirthDate().getYear());
 				if(figure.getBirthDate().getMonth()!=null) jgen.writeNumberField("month", figure.getBirthDate().getMonth());
-				if(figure.getBirthDate().getDay()!=null)jgen.writeNumberField("day", figure.getBirthDate().getDay());
+				if(figure.getBirthDate().getDay()!=null) jgen.writeNumberField("day", figure.getBirthDate().getDay());
 				jgen.writeEndObject();
 			}
 			if(figure.getDeathDate()!=null) {

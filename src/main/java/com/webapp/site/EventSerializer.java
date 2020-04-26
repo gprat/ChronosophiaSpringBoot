@@ -31,7 +31,7 @@ public class EventSerializer extends StdSerializer<Event> {
 		jgen.writeEndObject();
 		jgen.writeStringField("name",event.getName());
 		jgen.writeStringField("description",event.getDescription());
-		jgen.writeStringField("url",event.getUrl());
+		if(event.getUrl()!=null) jgen.writeStringField("url",event.getUrl());
 		jgen.writeFieldName("categories");
 		jgen.writeStartArray();
 		for(Category c : event.getCategories()) {

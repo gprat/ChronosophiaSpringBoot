@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -109,7 +110,19 @@ public class FigureController {
 	}
 	
 	@RequestMapping(value = "save", method = RequestMethod.POST)
-	public View createFigure(FigureForm form, Principal principal){
+	public String createFigure(@Valid FigureForm form, BindingResult bindingResult, Map<String, Object> model, Principal principal){
+		if(bindingResult.hasErrors()) {
+			model.put("figureForm",form);
+			try{
+				model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
+				model.put("rolesJSON", objectMapper.writeValueAsString(this.roleService.getRolesByUsername(principal.getName())));
+				model.put("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			return "figure/figureform";
+		}
+		
 		Figure figure;
 		if(form.id!=null && form.id!=0){
 			figure = this.figureService.getFigure(form.id, principal.getName());
@@ -142,7 +155,7 @@ public class FigureController {
 		figure.setEvents(eventList);
 		figure.setUrl(form.url);
 		this.figureService.save(figure);
-		return new RedirectView("/figure/list", true, false);
+		return "redirect:list";
 	}
 	
 	@RequestMapping(value = "/id/{id}", params ="delete", method = RequestMethod.POST)
