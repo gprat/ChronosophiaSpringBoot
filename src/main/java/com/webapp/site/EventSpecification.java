@@ -3,19 +3,16 @@ package com.webapp.site;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.jpa.domain.Specification;
+
+import com.webapp.site.entities.Event;
+
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-
-import org.springframework.data.jpa.domain.Specification;
-
-import com.webapp.site.entities.City;
-import com.webapp.site.entities.Event;
-import com.webapp.site.entities.Category;
-import com.webapp.site.entities.Figure;
 
 public class EventSpecification implements Specification<Event>{
 	private EventFilter criteria;

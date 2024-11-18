@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.webapp.site.entities.Chronology;
 import com.webapp.site.entities.Figure;
 
 public interface FigureRepository extends CrudRepository<Figure,Long> {
