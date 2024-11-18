@@ -1,7 +1,7 @@
 package com.webapp.site.entities;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 
 /**
@@ -16,7 +16,7 @@ public class Sculpture implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idArt;
+	private Long idArt;
 
 	//bi-directional many-to-one association to Figure
 	@ManyToOne
@@ -31,11 +31,11 @@ public class Sculpture implements Serializable {
 	public Sculpture() {
 	}
 
-	public int getIdArt() {
+	public Long getIdArt() {
 		return this.idArt;
 	}
 
-	public void setIdArt(int idArt) {
+	public void setIdArt(Long idArt) {
 		this.idArt = idArt;
 	}
 

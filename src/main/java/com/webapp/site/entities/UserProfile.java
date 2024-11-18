@@ -1,7 +1,7 @@
 package com.webapp.site.entities;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.List;

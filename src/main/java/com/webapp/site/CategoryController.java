@@ -3,8 +3,8 @@ package com.webapp.site;
 import java.security.Principal;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.validation.Valid;
+import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;

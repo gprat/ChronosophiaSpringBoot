@@ -2,10 +2,8 @@ package com.webapp.site;
 
 import java.util.Date;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.webapp.site.entities.*;
-import com.webapp.site.repositories.FigureRepository;
 import com.webapp.site.repositories.PersistentLoginRepository;
  
 

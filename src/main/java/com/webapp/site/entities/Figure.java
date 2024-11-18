@@ -2,8 +2,7 @@ package com.webapp.site.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
-import javax.transaction.Transactional;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

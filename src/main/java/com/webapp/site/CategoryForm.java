@@ -1,6 +1,6 @@
 package com.webapp.site;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 public class CategoryForm {
 

@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.webapp.site.entities.City;
 import com.webapp.site.entities.User;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import java.security.Principal;
 import java.util.List;

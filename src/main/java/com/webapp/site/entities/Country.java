@@ -2,7 +2,7 @@ package com.webapp.site.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.Expose;
@@ -23,7 +23,7 @@ public class Country implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idCountry;
+	private Long idCountry;
 
 	@NotBlank
 	private String name;
@@ -43,11 +43,11 @@ public class Country implements Serializable {
 	public Country() {
 	}
 
-	public int getIdCountry() {
+	public Long getIdCountry() {
 		return this.idCountry;
 	}
 
-	public void setIdCountry(int idCountry) {
+	public void setIdCountry(Long idCountry) {
 		this.idCountry = idCountry;
 	}
 

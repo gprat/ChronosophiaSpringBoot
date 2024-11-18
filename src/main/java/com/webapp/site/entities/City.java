@@ -3,8 +3,8 @@ package com.webapp.site.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.*;
-import javax.validation.Valid;
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

@@ -2,7 +2,7 @@ package com.webapp.site.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class Almanac implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idAlmanac;
+	private Long idAlmanac;
 
 	private String name;
 
@@ -43,11 +43,11 @@ public class Almanac implements Serializable {
 	public Almanac() {
 	}
 
-	public int getIdAlmanac() {
+	public Long getIdAlmanac() {
 		return this.idAlmanac;
 	}
 
-	public void setIdAlmanac(int idAlmanac) {
+	public void setIdAlmanac(Long idAlmanac) {
 		this.idAlmanac = idAlmanac;
 	}
 

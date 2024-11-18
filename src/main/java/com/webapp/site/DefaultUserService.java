@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import com.webapp.site.entities.User;
 import com.webapp.site.repositories.UserRepository;

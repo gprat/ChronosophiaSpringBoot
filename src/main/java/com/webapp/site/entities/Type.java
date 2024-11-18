@@ -1,7 +1,7 @@
 package com.webapp.site.entities;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 
@@ -17,7 +17,7 @@ public class Type implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idType;
+	private Long idType;
 
 	private String name;
 
@@ -28,11 +28,11 @@ public class Type implements Serializable {
 	public Type() {
 	}
 
-	public int getIdType() {
+	public Long getIdType() {
 		return this.idType;
 	}
 
-	public void setIdType(int idType) {
+	public void setIdType(Long idType) {
 		this.idType = idType;
 	}
 

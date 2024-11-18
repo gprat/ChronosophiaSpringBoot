@@ -2,7 +2,7 @@ package com.webapp.site.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -23,7 +23,7 @@ public class Date implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idDate;
+	private Long idDate;
 
 	private Integer year;
 	
@@ -67,11 +67,11 @@ public class Date implements Serializable {
 		this.year = year;
 	}
 
-	public int getIdDate() {
+	public Long getIdDate() {
 		return this.idDate;
 	}
 
-	public void setIdDate(int idDate) {
+	public void setIdDate(Long idDate) {
 		this.idDate = idDate;
 	}
 

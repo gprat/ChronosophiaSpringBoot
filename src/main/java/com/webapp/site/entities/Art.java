@@ -2,7 +2,7 @@ package com.webapp.site.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 
 /**
@@ -17,7 +17,7 @@ public class Art implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idArt;
+	private Long idArt;
 
 	@Lob
 	private String description;
@@ -61,11 +61,11 @@ public class Art implements Serializable {
 	public Art() {
 	}
 
-	public int getIdArt() {
+	public Long getIdArt() {
 		return this.idArt;
 	}
 
-	public void setIdArt(int idArt) {
+	public void setIdArt(Long idArt) {
 		this.idArt = idArt;
 	}
 

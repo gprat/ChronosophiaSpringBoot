@@ -3,7 +3,7 @@ package com.webapp.site;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.joda.time.chrono.GJChronology;
 import org.joda.time.format.DateTimeFormat;
