@@ -2,8 +2,6 @@ package com.webapp.site;
 
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.webapp.site.entities.Date;
 import com.webapp.site.entities.Event;

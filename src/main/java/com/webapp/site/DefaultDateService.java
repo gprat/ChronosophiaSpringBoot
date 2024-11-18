@@ -73,7 +73,7 @@ public class DefaultDateService implements DateService {
 		if(month==0) month = null;
 		boolean bValid=false;
 		if(year!=null){
-			if((month==null&&day==null)||(month<12&&month>0&&day==null)){
+			if((month==null&&day==null)||(day==null&&month!=null&&month<12&&month>0)){
 				bValid = true;
 			}
 			else{

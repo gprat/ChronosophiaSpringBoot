@@ -40,8 +40,9 @@ public class SecurityConfiguration{
     	CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");
         filter.setForceEncoding(true);
-        http.requiresChannel().requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null).requiresSecure();
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.securityMatcher(r -> r.getHeader("X-Forwarded-Proto") != null)
+        .requiresChannel(channel -> channel.anyRequest().requiresSecure())
+        .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
             authorizationManagerRequestMatcherRegistry.requestMatchers("/","/**/list","/**/view","/**/add","/**/update","/**/delete","/**/upload","/**/import","/**/export","/**/download","/**/id/**", "/**/save", "/**/add", "/**/filter","/**/logout")
                 .hasRole("USER or ADMIN or DBA")

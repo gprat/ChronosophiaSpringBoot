@@ -1,7 +1,5 @@
 package com.webapp.site;
 
-import java.util.List;
-
 import jakarta.validation.constraints.*;
 
 public class EventForm {

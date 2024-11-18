@@ -2,9 +2,6 @@ package com.webapp.site;
 
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import com.webapp.site.entities.Figure;
 
 public interface FigureService {

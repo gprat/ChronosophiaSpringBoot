@@ -163,7 +163,7 @@ public class FigureController {
 	@PostMapping("/download")
 	 public String downloadFile(HttpServletRequest req, Principal principal) {
 		String[] selectedIds = req.getParameterValues("selectedIds");
-		List<Long> idList = new ArrayList();
+		List<Long> idList = new ArrayList<Long>();
 		String description = req.getParameter("description");
 		if(selectedIds!=null&&selectedIds.length>0) {
 			new ArrayList<String>(Arrays.asList(selectedIds)).forEach(idFigure->idList.add(Long.parseLong(idFigure)));
@@ -174,7 +174,6 @@ public class FigureController {
 			try {
 				downloadStringContent = objectMapper.writeValueAsString(this.figureService.getFiguresByUsernameAndIds(principal.getName(),idList));
 			} catch (JsonProcessingException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			amazonClient.uploadJSON(downloadFileName, downloadStringContent, description, principal.getName());
@@ -207,7 +206,7 @@ public class FigureController {
 						JsonNode deathDateNode = root.path("deathDate");
 						if (!deathDateNode.isMissingNode()) figure.setDeathDate(this.dateService.setDate(deathDateNode.path("day").asInt(), deathDateNode.path("month").asInt(), deathDateNode.path("year").asInt()));
 						if(!this.figureService.existsFigure(figure.getFirstName(), figure.getLastName(), figure.getBirthDate().getYear(), principal.getName())) {
-							List<Event> eventList = new ArrayList();
+							List<Event> eventList = new ArrayList<Event>();
 							for(JsonNode rootEvent : root.path("eventsToImport")) { 
 								Event event = this.eventService.importEvent(rootEvent, principal.getName());
 								if(event!=null) {
@@ -243,7 +242,6 @@ public class FigureController {
 					}
 						
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			 }

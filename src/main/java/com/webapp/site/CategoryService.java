@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.webapp.site.entities.Category;
-import com.webapp.site.entities.User;
 
 public interface CategoryService {
 	

@@ -64,7 +64,6 @@ public class ChronologyController {
 				model.addAttribute("titre",this.chronologyService.getChronology(id,principal.getName()).getName());
 			}
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "chronology/view";
@@ -219,7 +218,7 @@ public class ChronologyController {
 	 public @ResponseBody void downloadFile(HttpServletRequest req ,HttpServletResponse resp, Principal principal) {
 		String[] selectedIds = req.getParameterValues("selectedIds");
 		String description = req.getParameter("description");
-		List<Long> idList = new ArrayList();
+		List<Long> idList = new ArrayList<Long>();
 		if(selectedIds!=null&&selectedIds.length>0) {
 			new ArrayList<String>(Arrays.asList(selectedIds)).forEach(idChronology->idList.add(Long.parseLong(idChronology)));
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyHHmmss");  
@@ -229,7 +228,6 @@ public class ChronologyController {
 			try {
 				downloadStringContent = objectMapper.writeValueAsString(this.chronologyService.getChronologiesByUsernameAndIds(principal.getName(),idList));
 			} catch (JsonProcessingException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			amazonClient.uploadJSON(downloadFileName, downloadStringContent, description, principal.getName());
@@ -259,7 +257,7 @@ public class ChronologyController {
 						if(!this.chronologyService.ExistChronology(chronology.getName(), eventCount, principal.getName())) {
 							chronology.setDescription(root.path("descritpion").asText());
 							chronology.setUrl(root.path("url").asText());
-							List<Event> eventList = new ArrayList();
+							List<Event> eventList = new ArrayList<Event>();
 							for(JsonNode rootEvent : rootEventArray) { 
 								Event event = this.eventService.importEvent(rootEvent, principal.getName());
 								if(event!=null) {
@@ -276,7 +274,6 @@ public class ChronologyController {
 						}
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			 }

@@ -92,7 +92,6 @@ public class CityController {
         	}
 			
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	return "city/view";

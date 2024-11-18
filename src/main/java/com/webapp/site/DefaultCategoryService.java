@@ -3,14 +3,13 @@ package com.webapp.site;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.inject.Inject;
-
 import org.springframework.stereotype.Service;
 
 import com.webapp.site.entities.Category;
-import com.webapp.site.entities.User;
 import com.webapp.site.repositories.CategoryRepository;
 import com.webapp.site.repositories.UserRepository;
+
+import jakarta.inject.Inject;
 
 
 @Service

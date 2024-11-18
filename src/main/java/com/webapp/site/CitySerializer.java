@@ -48,7 +48,6 @@ public class CitySerializer extends StdSerializer<City> {
 				if(city.addEventsInJson) {
 					jgen.writeFieldName("events");
 					jgen.writeStartArray();
-					int i = 1;
 					for(Event e : city.getEvents()){
 						jgen.writeStartObject();
 						jgen.writeObjectFieldStart("start_date");

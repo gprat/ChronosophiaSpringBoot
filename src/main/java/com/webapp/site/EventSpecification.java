@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import com.webapp.site.entities.Event;
 
@@ -14,6 +16,10 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
+import com.webapp.site.entities.Category;
+import com.webapp.site.entities.Figure;	
+import com.webapp.site.entities.User;
+
 public class EventSpecification implements Specification<Event>{
 	private EventFilter criteria;
 	
@@ -22,19 +28,19 @@ public class EventSpecification implements Specification<Event>{
 	}
 	
 	@Override
-	public Predicate toPredicate(Root<Event> root, CriteriaQuery<?> query,
-			CriteriaBuilder cb) {
+	public Predicate toPredicate(@NonNull Root<Event> root,@Nullable CriteriaQuery<?> query,
+			@NonNull CriteriaBuilder cb) {
 		
 		
 		final List<Predicate> predicates = new ArrayList<Predicate>();
 		
 		if(criteria.getCategories()!=null&&criteria.getCategories().size()>0){
-			Join categoryJoin = root.join("categories");
+			Join<Figure,Category> categoryJoin = root.join("categories");
 			Path<Integer> idCategory = categoryJoin.get("idCategory");
 			predicates.add(idCategory.in(criteria.getCategories()));
 		}
 		if(criteria.getFigures()!=null&&criteria.getFigures().size()>0){
-			Join figureJoin = root.join("figures");
+			Join<Event,Figure> figureJoin = root.join("figures");
 			Path<Integer> idFigure = figureJoin.get("idFigure");
 			predicates.add(idFigure.in(criteria.getFigures()));
 		}
@@ -47,11 +53,13 @@ public class EventSpecification implements Specification<Event>{
 			predicates.add(idEvent.in(criteria.getEventsToExclude()).not());
 		}
 		if(criteria.getUsername()!=null&&criteria.getUsername()!=""){
-			Join userJoin = root.join("user");
+			Join<Event,User> userJoin = root.join("user");
 			Path<String> username = userJoin.get("username");
 			predicates.add(username.in(criteria.getUsername()));
  		}
-		query.distinct(true);
+		if(query!=null){
+			query.distinct(true);
+		}
 		return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 	}
 

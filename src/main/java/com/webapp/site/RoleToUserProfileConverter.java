@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import com.webapp.site.entities.UserProfile;
 
@@ -22,7 +23,7 @@ public class RoleToUserProfileConverter implements Converter<Object, UserProfile
      * Gets UserProfile by Id
      * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
      */
-    public UserProfile convert(Object element) {
+    public UserProfile convert(@NonNull Object element) {
         Long id = Long.parseLong((String)element);
         UserProfile profile= userProfileService.getUserProfile(id);
         logger.info("Profile : {}",profile);

@@ -1,22 +1,19 @@
 package com.webapp.site;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.inject.Inject;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.webapp.site.repositories.EventRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.webapp.site.entities.Category;
-import com.webapp.site.entities.City;
 import com.webapp.site.entities.Date;
 import com.webapp.site.entities.Event;
-import com.webapp.site.entities.Figure;
 import com.webapp.site.entities.User;
+import com.webapp.site.repositories.EventRepository;
+
+import jakarta.inject.Inject;
 
 @Service
 public class DefaultEventService implements EventService {

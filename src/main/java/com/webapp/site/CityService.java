@@ -1,7 +1,7 @@
 package com.webapp.site;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
+
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,9 +11,6 @@ import com.webapp.site.entities.User;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-
-import java.security.Principal;
-import java.util.List;
 
 @Validated
 public interface CityService {

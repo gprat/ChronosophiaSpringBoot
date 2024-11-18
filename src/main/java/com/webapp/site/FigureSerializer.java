@@ -34,7 +34,7 @@ public class FigureSerializer extends StdSerializer<Figure> {
 		 jgen.writeStringField("figureDates","("+sBirthYear+"-"+sDeathYear+")");
 		 jgen.writeFieldName("events");
 			jgen.writeStartArray();
-			int i = 1;
+
 			for(Event e : figure.getEvents()){
 				jgen.writeStartObject();
 				jgen.writeObjectFieldStart("start_date");
@@ -61,7 +61,6 @@ public class FigureSerializer extends StdSerializer<Figure> {
 				
 				
 				//jgen.writeStringField("unique_id","chrono"+String.valueOf(chronology.getIdChronology())+"_"+String.valueOf(i));
-				i++;
 				jgen.writeEndObject();
 			}
 			jgen.writeEndArray();

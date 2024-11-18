@@ -58,7 +58,7 @@ public class AmazonClient {
 	public List<FileContent> listofJson(String prefix) {
 		ObjectListing listing = s3client.listObjects( bucketName, prefix);
 		List<S3ObjectSummary> summaries = listing.getObjectSummaries();
-		List<FileContent> contents = new ArrayList();
+		List<FileContent> contents = new ArrayList<FileContent>();
 
 		while (listing.isTruncated()) {
 		   listing = s3client.listNextBatchOfObjects (listing);
@@ -86,7 +86,6 @@ public class AmazonClient {
 	}
 	
 	public InputStream getFile(String filename){
-		InputStream input = null;
 		S3Object fullObject = null;
 		fullObject = s3client.getObject(new GetObjectRequest(bucketName, filename));
 		if(fullObject!=null) {

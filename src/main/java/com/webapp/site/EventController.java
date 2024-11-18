@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webapp.site.entities.Category;
 import com.webapp.site.entities.City;
 import com.webapp.site.entities.Event;
-import com.webapp.site.entities.Figure;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
@@ -129,7 +128,6 @@ public class EventController {
 			event=new Event();
 		}
 		List<Category> categoryList = new ArrayList<>();
-		List<Figure> figureList = new ArrayList<>();
 		event.setName(eventForm.name);
 		event.setUrl(eventForm.getUrl());
 		event.setDate(this.dateService.setDate(eventForm.day, eventForm.month, eventForm.year));
@@ -167,7 +165,7 @@ public class EventController {
 	 public String downloadFile(HttpServletRequest req, Principal principal) {
 		String[] selectedIds = req.getParameterValues("selectedIds");
 		String description = req.getParameter("description");
-		List<Long> idList = new ArrayList();
+		List<Long> idList = new ArrayList<Long>();
 		if(selectedIds!=null&&selectedIds.length>0) {
 			new ArrayList<String>(Arrays.asList(selectedIds)).forEach(idEvent->idList.add(Long.parseLong(idEvent)));
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyHHmmss");  
@@ -177,7 +175,6 @@ public class EventController {
 			try {
 				downloadStringContent = objectMapper.writeValueAsString(this.eventService.getEventsByUsernameAndIds(principal.getName(),idList));
 			} catch (JsonProcessingException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			amazonClient.uploadJSON(downloadFileName, downloadStringContent, description, principal.getName());
@@ -205,7 +202,6 @@ public class EventController {
 					}
 						
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			 }
