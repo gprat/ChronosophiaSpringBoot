@@ -12,19 +12,22 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
- 
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+public class SecurityConfiguration{
  
     @Autowired
     UserDetailsService userDetailsService;
@@ -39,16 +42,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	  auth.authenticationProvider(authenticationProvider()); }
 	 
  
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     	CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");
         filter.setForceEncoding(true);
         http.requiresChannel().requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null).requiresSecure();
-        http.authorizeRequests().antMatchers("/","/**/list","/**/view","/**/add","/**/update","/**/delete","/**/upload","/**/import","/**/export","/**/download","/**/id/**", "/**/save", "/**/add", "/**/filter","/**/logout")
-                .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_DBA')")
-                .antMatchers("/newuser/**", "/delete-user-*").access("hasRole('ROLE_ADMIN')").antMatchers("/edit-user-*", "/userlist")
-                .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DBA')").antMatchers("/create-user","/resources/**").permitAll().and().formLogin().loginPage("/login").permitAll().and().authorizeRequests().antMatchers("/**").access("hasRole('ROLE_ADMIN')");
+        http.csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
+            authorizationManagerRequestMatcherRegistry.requestMatchers("/","/**/list","/**/view","/**/add","/**/update","/**/delete","/**/upload","/**/import","/**/export","/**/download","/**/id/**", "/**/save", "/**/add", "/**/filter","/**/logout")
+                .hasRole("USER or ADMIN or DBA")
+                .requestMatchers("/newuser/**", "/delete-user-*").hasRole("ADMIN")
+                .requestMatchers("/edit-user-*", "/userlist")
+                .hasRole("ADMIN or DBA")
+                .requestMatchers("/create-user","/resources/**").permitAll()
+                .requestMatchers("/login/**").permitAll()
+                .anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(httpSecuritySessionManagementConfigurer ->
+                    httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        
+            return http.build();
     }
  
     @Bean
@@ -80,11 +94,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	  @Bean public AuthenticationTrustResolver getAuthenticationTrustResolver() {
 	  return new AuthenticationTrustResolverImpl(); }
 	 
-    
-    @Bean
-    public AuthenticationManager customAuthenticationManager() throws Exception {
-        return authenticationManager();
-    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
