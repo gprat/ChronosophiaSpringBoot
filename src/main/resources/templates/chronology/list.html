@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Liste des Chronologies</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    
+    <div class="container">
+        <h3>Chronologies</h3>
+        
+        <table class="table table-bordered">
+            <tr>
+                <th>Nom</th>
+                <th>Opérations</th>
+            </tr>
+            <tr th:each="chronology : ${chronologies}">
+                <td th:text="${chronology.name}"></td>
+                <td>
+                    <form th:action="@{/chronology/id/{id}(id=${chronology.idChronology})}" 
+                          method="post" 
+                          style="display: inline;">
+                        <input type="submit" value="Afficher" name="view" class="btn" />
+                        <input type="submit" value="Mettre à jour" name="update" class="btn" />
+                        <input type="submit" value="Supprimer" name="delete" class="btn" />
+                    </form>
+                </td>
+            </tr>
+        </table>
+
+        <form th:action="@{/chronology/add}" method="post" style="display: inline;">
+            <input type="submit" value="Créer une chronologie" class="btn" />
+        </form>
+    </div>
+</body>
+</html> 

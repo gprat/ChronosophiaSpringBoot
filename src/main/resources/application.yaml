@@ -1,5 +1,5 @@
 amazonProperties:
-  endpointUrl: {endpointUrl}
-  accessKey: {accessKey}
-  secretKey: {secretKey}
-  bucketName: {bucketName}
+  endpointUrl:   https://s3.eu-west-3.amazonaws.com
+  accessKey: accessKey
+  secretKey: secretKey
+  bucketName: bucketName

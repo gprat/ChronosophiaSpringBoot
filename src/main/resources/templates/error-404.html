@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
- <head>
-     <title> Error</title>
-     <link rel="stylesheet" th:href="@{/css/style.css}"/>
- </head>
- <body th:style="'background: url(/images/background1.jpg) 
- no-repeat center center fixed;'">
-     <div class="container" >
-       <h1>An error has occurred...</h1>
-       <img th:src="@{/images/error-icon.png}" 
-       width="100px" height="100px" />
-       <p>There seems to be a problem with the page you requested 
-       (<span th:text="${path}"></span>).</p>
-       <p th:text="${'The status code is ' + status 
-       + ', which means that the page was ' + error + '.'}"></p>
-       <p th:text="${'Further details: ' + message + '.'}"></p>
-       <a class="btn" href="/home">Back to home</a>
-     </div>
- </body>
+<head>
+    <meta charset="UTF-8">
+    <title>404 Error</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="text-center"><i class="fa fa-frown-o"></i> Désolé, nous n'avons pas pu trouvé la page que vous cherchiez</h1>
+        <br>
+        <p class="text-center"><a class="btn btn-primary" th:href="@{/}"><i class="fa fa-home"></i> Retour à la page principale</a></p>
+    </div>
+</div>
+</body>
 </html>
