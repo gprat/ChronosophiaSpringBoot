@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Liste des positions</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    
+    <div class="container">
+        <h3>Positions</h3>
+        
+        <table class="table table-bordered">
+            <tr>
+                <th>Nom</th>
+                <th>Opérations</th>
+            </tr>
+            <tr th:each="role : ${roles}">
+                <td th:text="${role.name}"></td>
+                <td>
+                    <form th:action="@{/role/{id}/delete(id=${role.idRole})}" method="post" style="display: inline;">
+                        <input type="submit" value="Supprimer" class="btn"/>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        
+        <form th:action="@{/role/add}" method="post" style="display: inline;">
+            <input type="submit" value="Créer une position" class="btn"/>
+        </form>
+    </div>
+</body>
+</html> 

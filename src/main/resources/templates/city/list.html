@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Liste des Villes</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    <div class="container">
+        <h3>Villes</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th>Nom</th>
+                <th>Pays</th>
+                <th>Opérations</th>
+            </tr>
+            <tr th:each="city : ${cities}">
+                <td th:text="${city.name}"></td>
+                <td th:text="${city.country.name}"></td>
+                <td>
+                    <form th:action="@{/city/{id}(id=${city.idCity})}" method="post" style="display: inline;">
+                        <input type="submit" name="view" value="Afficher" class="btn"/>
+                        <input type="submit" name="update" value="Mettre à jour" class="btn"/>
+                        <input type="submit" name="delete" value="Supprimer" class="btn"/>
+                    </form>
+                </td>
+            </tr>
+        </table>
+
+        <form th:action="@{/city/add}" method="post" style="display: inline;">
+            <input type="submit" value="Créer une ville" class="btn"/>
+        </form>
+        <br>
+
+        <form th:action="@{/city/view}" th:object="${eventsSpan}" method="post" class="form-inline">
+            <div class="form-group">
+                <label>De :</label>
+                <input type="text" class="form-control" th:field="*{startYear}"/>
+            </div>
+            <div class="form-group">
+                <label>à :</label>
+                <input type="text" class="form-control" th:field="*{endYear}"/>
+            </div>
+            <input type="submit" value="Voir les villes" class="btn"/>
+        </form>
+    </div>
+</body>
+</html> 

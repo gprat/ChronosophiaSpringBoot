@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Liste des Chronologies</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    <div class="container">
+        <h3>Evenements</h3>
+        <form th:action="@{/event/download}" method="post">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Date</th>
+                        <th>Ville</th>
+                        <th>Evenements à exporter</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="event : ${events}">
+                        <td th:text="${event.name}"></td>
+                        <td th:text="${event.date != null ? event.date.toString() : ''}"></td>
+                        <td th:text="${event.city != null ? event.city.toString() : ''}"></td>
+                        <td>
+                            <input type="checkbox" name="selectedIds" th:value="${event.idEvent}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <input name="description" type="text" class="form-control" placeholder="Description"/>
+            <input type="submit" value="Export" class="btn" />
+        </form>
+    </div>
+</body>
+</html> 

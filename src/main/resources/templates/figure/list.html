@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Liste des personnages</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    <div class="container">
+        <h3>Personnages</h3>
+        
+        <form th:action="@{/figure/list}" th:object="${selectFigureForm}" method="post" class="form-inline">
+            <div class="form-group">
+                <label th:for="category">Catégorie : </label>
+                <select th:field="*{category}" class="form-control">
+                    <option value="">-----</option>
+                    <option th:each="cat : ${categoryList}" 
+                            th:value="${cat.name}" 
+                            th:text="${cat.name}">
+                    </option>
+                </select>
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="form-group">
+                <label th:for="role">Rôle : </label>
+                <select th:field="*{role}" class="form-control">
+                    <option value="">-----</option>
+                    <option th:each="r : ${roleList}" 
+                            th:value="${r.name}" 
+                            th:text="${r.name}">
+                    </option>
+                </select>
+            </div>
+            <input type="submit" value="Filtrer" class="btn"/>
+        </form>
+        <br />
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Date de Naissance</th>
+                    <th>Date de Mort</th>
+                    <th>Opérations</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="figure : ${figures}">
+                    <td th:text="${figure.firstName}"></td>
+                    <td th:text="${figure.lastName}"></td>
+                    <td th:text="${figure.birthDate != null ? figure.birthDate.toString() : ''}"></td>
+                    <td th:text="${figure.deathDate != null ? figure.deathDate.toString() : ''}"></td>
+                    <td>
+                        <form th:action="@{/figure/id/{id}(id=${figure.idFigure})}" method="post" style="display: inline;">
+                            <input type="submit" name="view" value="Afficher" class="btn" />
+                            <input type="submit" name="update" value="Mettre à jour" class="btn" />
+                            <input type="submit" name="delete" value="Supprimer" class="btn" />
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <form th:action="@{/figure/add}" method="post" style="display: inline;">
+            <input type="submit" value="Créer un personnage" class="btn" />
+        </form>
+    </div>
+</body>
+</html> 

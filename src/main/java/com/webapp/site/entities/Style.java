@@ -19,7 +19,7 @@ public class Style implements Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long idStyle;
 
-	@Lob
+	@Column(length = 600)
 	private String description;
 
 	private String name;

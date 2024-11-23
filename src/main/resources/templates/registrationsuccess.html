@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de création de compte</title>
+    <link th:href="@{/resources/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/app.css}" rel="stylesheet">
+</head>
+<body>
+    <div class="generic-container">
+        <div th:replace="~{authheader :: authheader}"></div>
+        
+        <div class="alert alert-success lead" th:text="${success}">
+        </div>
+        
+        <span class="well floatRight">
+            Go to <a th:href="@{/}">Connexion</a>
+        </span>
+    </div>
+</body>
+</html> 

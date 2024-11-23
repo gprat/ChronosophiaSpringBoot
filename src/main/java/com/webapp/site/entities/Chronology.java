@@ -40,7 +40,7 @@ public class Chronology implements Serializable {
 
 	private String url;
 	
-	@Lob
+	@Column(length = 600)
 	private String description;
 	
 	public String getDescription() {

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Liste des Chronologies</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <!-- JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    <div class="container">
+        <h3>Chronologies</h3>
+        
+        <form th:action="@{/chronology/download}" method="post" style="display: inline;">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Nom</th>
+                    <th>Chronologies à exporter</th>
+                </tr>
+                <tr th:each="chronology : ${chronologies}">
+                    <td th:text="${chronology.name}"></td>
+                    <td>
+                        <input type="checkbox" name="selectedIds" th:value="${chronology.idChronology}">
+                    </td>
+                </tr>
+            </table>
+            <input name="description" type="text" class="form-control" placeholder="Description"/> 
+            <input type="submit" value="Export" class="btn" />
+        </form>
+    </div>
+</body>
+</html> 

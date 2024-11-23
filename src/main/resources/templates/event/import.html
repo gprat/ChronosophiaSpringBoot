@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Evènements à importer</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <link th:href="@{/resources/css/style.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/normalize.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/jquery.flexdatalist.min.css}" rel="stylesheet">
+    <script th:src="@{/resources/js/jquery.flexdatalist.js}"></script>
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    <div class="container">
+        <h3>Evènements à importer</h3>
+        
+        <form th:action="@{/event/upload}" method="post">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Utilisateur</th>
+                        <th>Evenements à importer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="content : ${contents}">
+                        <td th:text="${content.filename}"></td>
+                        <td th:text="${content.description}"></td>
+                        <td th:text="${content.username}"></td>
+                        <td>
+                            <input type="checkbox" name="selectedFilenames" th:value="${content.filename}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type="submit" value="Submit" class="btn" />
+        </form>
+    </div>
+</body>
+</html> 

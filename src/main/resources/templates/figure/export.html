@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Liste des Chronologies</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    <div class="container">
+        <h3>Personnages</h3>
+        <form th:action="@{/figure/download}" method="post">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Date de Naissance</th>
+                        <th>Date de Mort</th>
+                        <th>Personnages à Exporter</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="figure : ${figures}">
+                        <td th:text="${figure.firstName}"></td>
+                        <td th:text="${figure.lastName}"></td>
+                        <td th:text="${figure.birthDate != null ? figure.birthDate.toString() : ''}"></td>
+                        <td th:text="${figure.deathDate != null ? figure.deathDate.toString() : ''}"></td>
+                        <td>
+                            <input type="checkbox" name="selectedIds" th:value="${figure.idFigure}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <input name="description" type="text" class="form-control" placeholder="Description"/>
+            <input type="submit" value="Export" class="btn" />
+        </form>
+    </div>
+</body>
+</html> 

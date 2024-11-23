@@ -14,7 +14,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQuery;
@@ -44,7 +43,7 @@ public class Figure implements Serializable {
 	@JoinColumn(name="idCountry")
 	private Country country;
 	
-	@Lob
+	@Column(length = 600)
 	private String biography;
 	
 	//bi-directional many-to-one association to Date

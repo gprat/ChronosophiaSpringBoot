@@ -69,8 +69,8 @@ public class DefaultDateService implements DateService {
 	
 	@Override
 	public Date setDate(Integer day, Integer month, Integer year){
-		if(day==0) day = null;
-		if(month==0) month = null;
+		if(day!=null&&day==0) day = null;
+		if(month!=null&&month==0) month = null;
 		boolean bValid=false;
 		if(year!=null){
 			if((month==null&&day==null)||(day==null&&month!=null&&month<12&&month>0)){

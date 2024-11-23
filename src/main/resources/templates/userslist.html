@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des utilisateurs</title>
+    
+    <link th:href="@{/resources/css/app.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="generic-container">
+        <div class="panel panel-default">
+            <div class="panel-heading"><span class="lead">Liste des utilisateurs</span></div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Nom d'utilisateur</th>
+                        <th width="100" sec:authorize="hasRole('ADMIN') or hasRole('DBA')"></th>
+                        <th width="100" sec:authorize="hasRole('ADMIN')"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.firstName}"></td>
+                        <td th:text="${user.lastName}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.username}"></td>
+                        <td sec:authorize="hasRole('ADMIN') or hasRole('DBA')">
+                            <form th:action="@{/edit-user-{username}(username=${user.username})}" method="get">
+                                <input type="submit" value="Modifier" class="btn">
+                            </form>
+                        </td>
+                        <td sec:authorize="hasRole('ADMIN')">
+                            <form th:action="@{/delete-user-{username}(username=${user.username})}" method="get">
+                                <input type="submit" value="Supprimer" class="btn">
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <form th:action="@{/newuser}" method="get" style="display: inline;" sec:authorize="hasRole('ADMIN')">
+            <input type="submit" value="Ajouter un nouvel utilisateur" class="btn">
+        </form>
+        <form th:action="@{/create-user}" method="get" style="display: inline;">
+            <input type="submit" value="Ajouter un nouvel utilisateur" class="btn">
+        </form>
+    </div>
+</body>
+</html> 

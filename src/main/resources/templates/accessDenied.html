@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AccessDenied page</title>
+</head>
+<body>
+    <div class="generic-container">
+        <div class="authbar">
+            <span>Cher <strong th:text="${loggedinuser}"></strong>, Vous n'êtes pas autorisé à accéder à cette page.</span>
+            <span class="floatRight"><a th:href="@{/logout}">Déconnexion</a></span>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Ajouter une position</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <link th:href="@{/resources/css/style.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/normalize.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    <div class="container">
+        <div class="col-sm-offset-1 col-sm-9">
+            <h1>Ajouter une position</h1>
+        </div>
+        <form th:action="@{/role/save}" th:object="${role}" method="post" class="form-horizontal">
+            <div class="form-group">
+                <label for="name" class="control-label col-md-3 col-sm-4">Nom de la position : </label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" th:field="*{name}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-8">
+                    <input type="submit" value="Sauver">
+                    <input type="reset" value="Reinitialiser">
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html> 

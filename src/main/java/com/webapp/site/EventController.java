@@ -29,6 +29,7 @@ import com.webapp.site.entities.Category;
 import com.webapp.site.entities.City;
 import com.webapp.site.entities.Event;
 
+
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -96,12 +97,17 @@ public class EventController {
 	public String createEvent(Map<String, Object> model, Principal principal){
 		EventForm eventForm = new EventForm();
 		model.put("eventForm", eventForm);
-		try{
+			try {
+				System.out.println("categoriesJSON : "+objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
+				System.out.println("citiesJSON : "+objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
 			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
 			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+
 		return "event/eventform";
 	}
 	

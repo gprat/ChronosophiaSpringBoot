@@ -19,7 +19,7 @@ public class Art implements Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long idArt;
 
-	@Lob
+	@Column(length = 600)
 	private String description;
 
 	private String name;

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Ajouter une personnalité</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link th:href="@{/resources/css/style.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/normalize.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/jquery.flexdatalist.min.css}" rel="stylesheet">
+    <script th:src="@{/resources/js/jquery.flexdatalist.js}"></script>
+    
+    <style type="text/css">
+        .nopadding {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    <div class="container">
+        <div class="col-sm-offset-1 col-sm-9">
+            <h1>Ajouter une personnalité</h1>
+        </div>
+        <form th:action="@{/figure/save}" th:object="${figureForm}" method="post" class="form-horizontal">
+            <input type="hidden" th:field="*{id}" />
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-4 col-xs-4">Nom de la personnalité : </label>
+                <div class="col-sm-7 col-xs-8">
+                    <input th:field="*{lastName}" class="form-control" placeholder="Nom" />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-4 col-xs-4">Prénom de la personnalité : </label>
+                <div class="col-sm-7 col-xs-8">
+                    <input th:field="*{firstName}" class="form-control" placeholder="Prénom" />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-4 col-xs-4">Date de naissance : </label>
+                <div class="col-md-3 col-sm-4 col-xs-8">
+                    <div class="row nopadding">
+                        <div class="col-lg-5 col-sm-6 nopadding">
+                            <div class="col-sm-6 col-xs-3 nopadding">
+                                <input th:field="*{dayOfBirth}" class="form-control" placeholder="jj" maxlength="2"/>
+                            </div>
+                            <div class="col-sm-6 col-xs-3 nopadding">
+                                <input th:field="*{monthOfBirth}" class="form-control" placeholder="mm" maxlength="2"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-3 nopadding">
+                            <input th:field="*{yearOfBirth}" class="form-control" placeholder="aaaa" maxlength="5"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-4 col-xs-4">Date de mort : </label>
+                <div class="col-md-3 col-sm-4 col-xs-8">
+                    <div class="row nopadding">
+                        <div class="col-lg-5 col-sm-6 nopadding">
+                            <div class="col-sm-6 col-xs-3 nopadding">
+                                <input th:field="*{dayOfDeath}" class="form-control" placeholder="jj" maxlength="2"/>
+                            </div>
+                            <div class="col-sm-6 col-xs-3 nopadding">
+                                <input th:field="*{monthOfDeath}" class="form-control" placeholder="mm" maxlength="2"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-3 nopadding">
+                            <input th:field="*{yearOfDeath}" class="form-control" placeholder="aaaa" maxlength="5"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-4 col-xs-4">Evènements : </label>
+                <div class="col-sm-7 col-xs-8">
+                    <input th:field="*{events}" class="events form-control" placeholder="Evènements" data-min-length="1" multiple="multiple"/>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-4 col-xs-4">Catégories : </label>
+                <div class="col-sm-7 col-xs-8">
+                    <input th:field="*{categories}" class="categories form-control" placeholder="Catégories" data-min-length="0" multiple="multiple"/>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-4 col-xs-4">Rôles : </label>
+                <div class="col-sm-7 col-xs-8">
+                    <input th:field="*{roles}" class="roles form-control" placeholder="Rôles" data-min-length="0" multiple="multiple"/>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-4 col-xs-4">Biographie: </label>
+                <div class="col-sm-7 col-xs-8">
+                    <textarea th:field="*{biography}" class="form-control" placeholder="Biographie" rows="8"></textarea>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-4 col-xs-4">Url de l'image : </label>
+                <div class="col-sm-7 col-xs-8">
+                    <input th:field="*{url}" class="form-control" placeholder="Url" />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <input type="submit" value="Sauver" />
+                    <input type="reset" value="Reinitialiser" />
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script th:inline="javascript">
+        var eventsSource = /*[[${eventsJSON}]]*/ {};
+        $('.events').flexdatalist({
+            minLength: 1,
+            searchIn: ['name'],
+            selectionRequired: true,
+            valueProperty: 'idEvent',
+            visibleProperties: ["name", "eventyear"],
+            textProperty: '{name}, {eventyear}',
+            data: eventsSource
+        });
+        
+        var categoriesSource = /*[[${categoriesJSON}]]*/ {};
+        $('.categories').flexdatalist({
+            minLength: 0,
+            searchIn: ['name'],
+            selectionRequired: true,
+            valueProperty: 'idCategory',
+            visibleProperties: ["name"],
+            textProperty: '{name}',
+            data: categoriesSource
+        });
+        
+        var rolesSource = /*[[${rolesJSON}]]*/ {};
+        $('.roles').flexdatalist({
+            minLength: 0,
+            searchIn: ['name'],
+            selectionRequired: true,
+            valueProperty: 'idRole',
+            visibleProperties: ["name"],
+            textProperty: '{name}',
+            data: rolesSource
+        });
+    </script>
+</body>
+</html> 

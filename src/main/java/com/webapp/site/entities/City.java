@@ -49,7 +49,7 @@ public class City implements Serializable {
 	@JoinColumn(name="idUser")
 	private User user;
 	
-	@Lob
+	@Column(length = 600)
 	private String description;
 	
 	//bi-directional many-to-one association to Event

@@ -1,0 +1,4 @@
+<div th:fragment="authheader" class="authbar">
+    <span>Dear <strong th:text="${loggedinuser}">User</strong>, Welcome to CrazyUsers.</span>
+    <span class="floatRight"><a th:href="@{/logout}">Logout</a></span>
+</div> 

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Ajout d'un utilisateur</title>
+    <link th:href="@{/resources/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/app.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+    <div class="generic-container">
+        <div class="well lead">Ajout d'un utilisateur</div>
+        <form th:action="@{/user/save}" th:object="${user}" method="POST" class="form-horizontal">
+            <input type="hidden" th:field="*{idUser}" />
+            
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="col-md-3 control-lable" for="firstName">Prénom</label>
+                    <div class="col-md-7">
+                        <input type="text" th:field="*{firstName}" class="form-control input-sm"/>
+                        <div class="has-error" th:if="${#fields.hasErrors('firstName')}">
+                            <span th:errors="*{firstName}" class="help-inline"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="col-md-3 control-lable" for="lastName">Nom</label>
+                    <div class="col-md-7">
+                        <input type="text" th:field="*{lastName}" class="form-control input-sm"/>
+                        <div class="has-error" th:if="${#fields.hasErrors('lastName')}">
+                            <span th:errors="*{lastName}" class="help-inline"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="col-md-3 control-lable" for="username">Nom d'utilisateur</label>
+                    <div class="col-md-7">
+                        <input type="text" th:field="*{username}" class="form-control input-sm"/>
+                        <div class="has-error" th:if="${#fields.hasErrors('username')}">
+                            <span th:errors="*{username}" class="help-inline"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="col-md-3 control-lable" for="password">Mot de Passe</label>
+                    <div class="col-md-7">
+                        <input type="password" th:field="*{password}" class="form-control input-sm"/>
+                        <div class="has-error" th:if="${#fields.hasErrors('password')}">
+                            <span th:errors="*{password}" class="help-inline"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="col-md-3 control-lable" for="email">Email</label>
+                    <div class="col-md-7">
+                        <input type="text" th:field="*{email}" class="form-control input-sm"/>
+                        <div class="has-error" th:if="${#fields.hasErrors('email')}">
+                            <span th:errors="*{email}" class="help-inline"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="col-md-3 control-lable" for="userProfiles">Roles</label>
+                    <div class="col-md-7">
+                        <select th:field="*{userProfiles}" multiple="multiple" class="form-control input-sm">
+                            <option th:each="role : ${roles}" 
+                                    th:value="${role.idProfile}" 
+                                    th:text="${role.name}">Role</option>
+                        </select>
+                        <div class="has-error" th:if="${#fields.hasErrors('userProfiles')}">
+                            <span th:errors="*{userProfiles}" class="help-inline"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-actions floatRight">
+                    <div th:if="${edit}">
+                        <input type="submit" value="Modifier" class="btn btn-primary btn-sm"/> ou 
+                        <a th:href="@{/list}">Annuler</a>
+                    </div>
+                    <div th:unless="${edit}">
+                        <input type="submit" value="Créer" class="btn btn-primary btn-sm"/> ou 
+                        <a th:href="@{/list}">Annuler</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html> 
