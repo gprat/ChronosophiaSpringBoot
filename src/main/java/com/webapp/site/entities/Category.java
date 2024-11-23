@@ -23,7 +23,7 @@ public class Category implements Serializable {
 
 	@Id 
 	@JsonSerialize(using = ToStringSerializer.class)
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long idCategory;
 
 	private String name;

@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,22 +49,43 @@ public class FigureController {
 	@Inject ObjectMapper objectMapper;
 	@Inject AmazonClient amazonClient;
 	
+	private String getPrincipalUsername(Principal principal) {
+		if (principal != null) {
+			return principal.getName();
+		}
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() != null) {
+			return auth.getName();
+		}
+		// Redirect to login will be handled by Spring Security configuration
+		return null;
+	}
 	
 	@RequestMapping(value = {"list"}, method = RequestMethod.GET)
     public String list(Map<String, Object> model, Principal principal){
+		String username = getPrincipalUsername(principal);
+		if (username == null) {
+			return "redirect:/login";
+		}
+		
 		model.put("selectFigureForm",new SelectFigureForm());
-		model.put("figures",this.figureService.getFiguresByUsername(principal.getName()));
-		model.put("categoryList", this.categoryService.getCategoriesByUsername(principal.getName()));
-		model.put("roleList", this.roleService.getRolesByUsername(principal.getName()));
+		model.put("figures",this.figureService.getFiguresByUsername(username));
+		model.put("categoryList", this.categoryService.getCategoriesByUsername(username));
+		model.put("roleList", this.roleService.getRolesByUsername(username));
 		return "figure/list";
 	}
 	
 	@RequestMapping(value = "list",method = RequestMethod.POST)
 	public String list(@ModelAttribute("selectFigureForm") SelectFigureForm selectFigureForm,Map<String, Object> model, Principal principal ){
+		String username = getPrincipalUsername(principal);
+		if (username == null) {
+			return "redirect:/login";
+		}
+		
 		model.put("selectFigureForm",new SelectFigureForm());
-		model.put("figures",this.figureService.getFiguresByCategoryAndRole(selectFigureForm.category, selectFigureForm.role, principal.getName()));
-		model.put("categoryList", this.categoryService.getCategoriesByUsername(principal.getName()));
-		model.put("roleList", this.roleService.getRolesByUsername(principal.getName()));
+		model.put("figures",this.figureService.getFiguresByCategoryAndRole(selectFigureForm.category, selectFigureForm.role, username));
+		model.put("categoryList", this.categoryService.getCategoriesByUsername(username));
+		model.put("roleList", this.roleService.getRolesByUsername(username));
 		return "figure/list";
 	}
 	

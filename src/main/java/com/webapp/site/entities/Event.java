@@ -35,7 +35,7 @@ public class Event implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id @Column(name="idEvent")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long idEvent;
 
 	private String name;

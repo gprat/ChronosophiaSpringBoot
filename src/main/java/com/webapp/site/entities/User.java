@@ -1,12 +1,22 @@
 package com.webapp.site.entities;
 
 import java.io.Serializable;
-
-import jakarta.persistence.*;
-
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 
 /**
@@ -14,13 +24,13 @@ import java.util.Set;
  * 
  */
 @Entity
-@Table(name="user")
+@Table(name="users")
 @NamedQuery(name="User.findAll", query="SELECT u FROM User u")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long idUser;
 
 	private String password;
@@ -66,10 +76,10 @@ public class User implements Serializable {
 	private List<Role> roles;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_userprofile", 
-             joinColumns = { @JoinColumn(name = "idUser") }, 
-             inverseJoinColumns = { @JoinColumn(name = "idProfile") })
-    private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+	@JoinTable(name = "user_userprofile", 
+	joinColumns = { @JoinColumn(name = "idUser") }, 
+	inverseJoinColumns = { @JoinColumn(name = "idProfile") })
+    private Set<UserProfile> userProfiles;
 
 	public User() {
 	}

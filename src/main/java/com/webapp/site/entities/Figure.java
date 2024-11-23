@@ -34,7 +34,7 @@ public class Figure implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id @Column(name="idFigure")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long idFigure;
 
 	private String lastName;

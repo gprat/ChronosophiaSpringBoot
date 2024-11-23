@@ -3,77 +3,60 @@ package com.webapp.site;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationTrustResolver;
-import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfiguration{
  
     @Autowired
-    UserDetailsService userDetailsService;
+    UserDetailsServiceImpl userDetailsService;
+
+    
  
-	
-	  //@Autowired PersistentTokenRepository tokenRepository;
-	 
+	  @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+    }
  
-	
-	  @Autowired public void configureGlobalSecurity(AuthenticationManagerBuilder
-	  auth) throws Exception { auth.userDetailsService(userDetailsService);
-	  auth.authenticationProvider(authenticationProvider()); }
-	 
- 
-    @Bean
+       @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    	CharacterEncodingFilter filter = new CharacterEncodingFilter();
-        filter.setEncoding("UTF-8");
-        filter.setForceEncoding(true);
-        http.securityMatcher(r -> r.getHeader("X-Forwarded-Proto") != null)
-        .requiresChannel(channel -> channel.anyRequest().requiresSecure())
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-            authorizationManagerRequestMatcherRegistry.requestMatchers("/","/**/list","/**/view","/**/add","/**/update","/**/delete","/**/upload","/**/import","/**/export","/**/download","/**/id/**", "/**/save", "/**/add", "/**/filter","/**/logout")
-                .hasRole("USER or ADMIN or DBA")
-                .requestMatchers("/newuser/**", "/delete-user-*").hasRole("ADMIN")
-                .requestMatchers("/edit-user-*", "/userlist")
-                .hasRole("ADMIN or DBA")
-                .requestMatchers("/create-user","/resources/**").permitAll()
-                .requestMatchers("/login/**").permitAll()
-                .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .sessionManagement(httpSecuritySessionManagementConfigurer ->
-                    httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        
-            return http.build();
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorize) ->
+                        authorize.requestMatchers("/register/**").permitAll()
+                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/users").hasRole("ADMIN")
+                                .anyRequest().authenticated()
+                ).formLogin(
+                        form -> form
+                                .loginPage("/login")
+                                .loginProcessingUrl("/login")
+                                .defaultSuccessUrl("/users")
+                                .permitAll()
+                ).logout(
+                        logout -> logout
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .permitAll()
+                );
+        return http.build();
     }
  
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public static BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
- 
-	
-	  @Bean public DaoAuthenticationProvider authenticationProvider() {
-	  DaoAuthenticationProvider authenticationProvider = new
-	  DaoAuthenticationProvider();
-	  authenticationProvider.setUserDetailsService(userDetailsService);
-	  authenticationProvider.setPasswordEncoder(bCryptPasswordEncoder()); return
-	  authenticationProvider; }
-	 
-	
-	
+
 	/*
 	 * @Bean public PersistentTokenBasedRememberMeServices
 	 * getPersistentTokenBasedRememberMeServices() {
@@ -83,15 +66,8 @@ public class SecurityConfiguration{
 	 */
 	 
 	 
- 
-	
-	  @Bean public AuthenticationTrustResolver getAuthenticationTrustResolver() {
-	  return new AuthenticationTrustResolverImpl(); }
-	 
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
+      
  
 }
+
+

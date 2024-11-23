@@ -6,15 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
  
  
- 
 @Controller
 @RequestMapping("/")
 @SessionAttributes("roles")
@@ -42,18 +42,19 @@ public class AppController {
 	@Inject
     UserProfileService userProfileService;
  
-	//@Inject
-    //PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
-     
-	@Inject
-    AuthenticationTrustResolver authenticationTrustResolver;
+	
+
 	
 	@Inject ChronologyService chronologyService;
+
+
     
 	
 	@RequestMapping(value = {"/"}, method = RequestMethod.GET)
 	public String list(Map<String, Object> model, Principal principal){
-		model.put("chronologies", chronologyService.getChronologiesByUsername(principal.getName()));
+		if (principal != null) {
+			model.put("chronologies", chronologyService.getChronologiesByUsername(principal.getName()));
+		}
 		return "chronology/list";
 	}
      
@@ -232,18 +233,7 @@ public class AppController {
         return "accessDenied";
     }
  
-    /**
-     * This method handles login GET requests.
-     * If users is already logged-in and tries to goto login page again, will be redirected to list page.
-     */
-    @RequestMapping(value = "/login", method = { RequestMethod.GET, RequestMethod.POST })
-    public String loginPage() {
-        if (isCurrentAuthenticationAnonymous()) {
-            return "login";
-        } else {
-            return "redirect:/userlist";  
-        }
-    }
+
  
     /**
      * This method handles logout requests.
@@ -263,25 +253,31 @@ public class AppController {
     /**
      * This method returns the principal[user-name] of logged-in user.
      */
-    private String getPrincipal(){
-        String userName = null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
- 
-        if (principal instanceof UserDetails) {
-            userName = ((UserDetails)principal).getUsername();
-        } else {
-            userName = principal.toString();
+    private String getPrincipal() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) {
+            return "anonymousUser";
         }
-        return userName;
+
+        Object principal = auth.getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails)principal).getUsername();
+        }
+        return principal.toString();
     }
      
-    /**
-     * This method returns true if users is already authenticated [logged-in], else false.
-     */
-    private boolean isCurrentAuthenticationAnonymous() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authenticationTrustResolver.isAnonymous(authentication);
+
+    
+    @GetMapping("/login")
+    public String loginForm() {
+        return "login";
     }
- 
- 
+
+    @GetMapping("/users")
+    public String listRegisteredUsers(Model model){
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "users";
+    }
+
 }
