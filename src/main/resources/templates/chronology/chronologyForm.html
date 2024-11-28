@@ -131,7 +131,7 @@
             });
         });
 
-        var eventsSource = /*[[${eventsJSON}]]*/ [];
+        var eventsSource = [(${eventsJSON})];
         $('.events').flexdatalist({
             minLength: 1,
             searchIn: ['name'],
@@ -142,7 +142,7 @@
             data: eventsSource
         });
 
-        var figuresSource = /*[[${figuresJSON}]]*/ [];
+        var figuresSource = [(${figuresJSON})];
         $('.figures').flexdatalist({
             minLength: 0,
             searchIn: ['firstName','lastName'],
@@ -153,7 +153,7 @@
             data: figuresSource
         });
 
-        var categoriesSource = /*[[${categoriesJSON}]]*/ [];
+        var categoriesSource = [(${categoriesJSON})];
         $('.categories').flexdatalist({
             minLength: 0,
             searchIn: ['name'],
@@ -174,7 +174,7 @@
             data: categoriesSource
         });
 
-        var citiesSource = /*[[${citiesJSON}]]*/ [];
+        var citiesSource = [(${citiesJSON})];
         $('.cities').flexdatalist({
             minLength: 0,
             searchIn: ['name'],

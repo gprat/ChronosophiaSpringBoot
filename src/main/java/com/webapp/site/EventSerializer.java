@@ -26,8 +26,8 @@ public class EventSerializer extends StdSerializer<Event> {
 		jgen.writeStringField("eventyear", event.getDate().getYear().toString());
 		jgen.writeObjectFieldStart("date");
 		jgen.writeNumberField("year", event.getDate().getYear());
-		jgen.writeNumberField("month", event.getDate().getMonth());
-		jgen.writeNumberField("day", event.getDate().getDay());
+		if(event.getDate().getMonth()!=null) jgen.writeNumberField("month", event.getDate().getMonth());
+		if(event.getDate().getDay()!=null) jgen.writeNumberField("day", event.getDate().getDay());
 		jgen.writeEndObject();
 		jgen.writeStringField("name",event.getName());
 		jgen.writeStringField("description",event.getDescription());

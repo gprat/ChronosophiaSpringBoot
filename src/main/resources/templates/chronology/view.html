@@ -19,7 +19,7 @@
     <div id="Timeline"></div>
     
     <script th:inline="javascript">
-        var bpmnJsonString = Chronology.chronologieJSON;
+        var bpmnJsonString = [(${chronologieJSON})];
         
         var options = {  
             width: '100%',

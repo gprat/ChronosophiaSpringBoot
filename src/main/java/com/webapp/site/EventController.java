@@ -94,16 +94,15 @@ public class EventController {
 	}
 	
 	@RequestMapping(value = "add", method = RequestMethod.POST)
-	public String createEvent(Map<String, Object> model, Principal principal){
+	public String createEvent(Model model, Principal principal){
 		EventForm eventForm = new EventForm();
-		model.put("eventForm", eventForm);
+		model.addAttribute("eventForm", eventForm);
 			try {
 				System.out.println("categoriesJSON : "+objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
 				System.out.println("citiesJSON : "+objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
-			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
-			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
+			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
+			model.addAttribute("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

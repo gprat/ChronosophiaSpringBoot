@@ -39,13 +39,13 @@ public class FigureSerializer extends StdSerializer<Figure> {
 				jgen.writeStartObject();
 				jgen.writeObjectFieldStart("start_date");
 				jgen.writeStringField("year", e.getDate().getYear().toString());
-				jgen.writeStringField("month", e.getDate().getMonth().toString());
-				jgen.writeStringField("day", e.getDate().getDay().toString());
+				if(e.getDate().getMonth()!=null) jgen.writeStringField("month", e.getDate().getMonth().toString());
+				if(e.getDate().getDay()!=null) jgen.writeStringField("day", e.getDate().getDay().toString());
 				jgen.writeEndObject();
 				jgen.writeObjectFieldStart("end_date");
 				jgen.writeStringField("year", e.getDate().getYear().toString());
-				jgen.writeStringField("month", e.getDate().getMonth().toString());
-				jgen.writeStringField("day", e.getDate().getDay().toString());
+				if(e.getDate().getMonth()!=null) jgen.writeStringField("month", e.getDate().getMonth().toString());
+				if(e.getDate().getDay()!=null) jgen.writeStringField("day", e.getDate().getDay().toString());
 				jgen.writeEndObject();
 				jgen.writeObjectFieldStart("text");
 				jgen.writeStringField("headline",e.getName());

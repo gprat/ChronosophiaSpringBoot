@@ -13,10 +13,8 @@ public class EventForm {
 	
 	String country;
 	
-	@Max(31)
 	Integer day;
 	
-	@Max(12)
 	Integer month;
 	
 	@NotNull

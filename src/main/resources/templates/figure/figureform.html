@@ -126,7 +126,7 @@
     </div>
     
     <script th:inline="javascript">
-        var eventsSource = /*[[${eventsJSON}]]*/ {};
+        var eventsSource = [(${eventsJSON})];
         $('.events').flexdatalist({
             minLength: 1,
             searchIn: ['name'],
@@ -137,7 +137,7 @@
             data: eventsSource
         });
         
-        var categoriesSource = /*[[${categoriesJSON}]]*/ {};
+        var categoriesSource = [(${categoriesJSON})];
         $('.categories').flexdatalist({
             minLength: 0,
             searchIn: ['name'],
@@ -148,7 +148,7 @@
             data: categoriesSource
         });
         
-        var rolesSource = /*[[${rolesJSON}]]*/ {};
+        var rolesSource = [(${rolesJSON})];
         $('.roles').flexdatalist({
             minLength: 0,
             searchIn: ['name'],

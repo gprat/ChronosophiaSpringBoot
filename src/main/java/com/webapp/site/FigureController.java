@@ -105,12 +105,12 @@ public class FigureController {
 	}
 	
 	@RequestMapping(value = "add", method = RequestMethod.POST)
-	public String createFigure(Map<String, Object> model, Principal principal){
-		 model.put("figureForm", new FigureForm());
+	public String createFigure(Model model, Principal principal){
+		 model.addAttribute("figureForm", new FigureForm());
 		 try{
-				model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
-				model.put("rolesJSON", objectMapper.writeValueAsString(this.roleService.getRolesByUsername(principal.getName())));
-				model.put("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
+				model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
+				model.addAttribute("rolesJSON", objectMapper.writeValueAsString(this.roleService.getRolesByUsername(principal.getName())));
+				model.addAttribute("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}

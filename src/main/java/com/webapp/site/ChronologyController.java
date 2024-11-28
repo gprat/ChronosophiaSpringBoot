@@ -70,16 +70,16 @@ public class ChronologyController {
 	}
 	
 	@RequestMapping(value = "add", method = RequestMethod.POST)
-	public String createChronology(Map<String, Object> model, Principal principal){
+	public String createChronology(Model model, Principal principal){
 		ChronologyForm chronologyForm = new ChronologyForm();
-		model.put("chronologyForm", chronologyForm);
-		model.put("selectEventForm",new SelectEventForm());
-		model.put("AvailableEventList", eventService.getEventsByUsername(principal.getName()));
+		model.addAttribute("chronologyForm", chronologyForm);
+		model.addAttribute("selectEventForm",new SelectEventForm());
+		model.addAttribute("AvailableEventList", eventService.getEventsByUsername(principal.getName()));
 		try{
-			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByUsername(principal.getName())));
-			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
-			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
-			model.put("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
+			model.addAttribute("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByUsername(principal.getName())));
+			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByUsername(principal.getName())));
+			model.addAttribute("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByUsername(principal.getName())));
+			model.addAttribute("eventsJSON", objectMapper.writeValueAsString(this.eventService.getEventsByUsername(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
