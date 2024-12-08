@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1">
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>View Cities</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -43,7 +41,7 @@
     </form>
 
     <script th:inline="javascript">
-        var json = /*[[${citiesJSON}]]*/ [];
+        var json = [(${citiesJSON})];
 
         var map;
         function initialize() {
@@ -69,7 +67,7 @@
                         infoWindow.open(map, marker);
                         $('#city-canvas').html(json[i].infocontent);
                         $("#input_div").removeClass('hidden').addClass('text-center');
-                        $("#form_id").attr("action", "/chronosophia/city/" + json[i].idCity);
+                        $("#form_id").attr("action", "/city/" + json[i].idCity).attr("method", "post").attr("params", "view");
                     }
                 })(marker, i));
             }

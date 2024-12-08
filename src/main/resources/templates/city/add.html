@@ -141,7 +141,7 @@
 		// [END region_geolocation]
 	</script>
         
-        <script th:src="@{https://maps.googleapis.com/maps/api/js(key=${@environment.getProperty('api.key')},signed_in=true,libraries=places,language=fr,callback=initAutocomplete)}"
+        <script th:src="@{https://maps.googleapis.com/maps/api/js(key=${@environment.getProperty('api.key')},libraries=places,language=fr,callback=initAutocomplete)}"
                 async defer></script>
     </div>
 </body>

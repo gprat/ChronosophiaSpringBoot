@@ -5,16 +5,15 @@
     <meta name="viewport" content="initial-scale=1">
     <title>View Cities</title>
 
-    <link href="/resources/css/timeline_style.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/resources/css/timeline_style.css}">
+    
+    <script src="//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link title="timeline-styles" rel="stylesheet" href="//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
-    <script src="//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
-    
-    <script th:inline="javascript">
-        var myKey = My_API_KEY;
-    </script>
+
     <script th:src="@{https://maps.googleapis.com/maps/api/js(key=${@environment.getProperty('api.key')})}"></script>
 
     <style>
@@ -43,7 +42,7 @@
         <div id="Timeline"></div>
         
         <script th:inline="javascript">
-            var bpmnJsonString =  /*[[${citiesJSON}]]*/ [];
+            var bpmnJsonString = [(${cityJSON})];
             var options = {
                 width: '100%',
                 timenav_position: 'top',

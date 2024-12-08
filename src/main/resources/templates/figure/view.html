@@ -23,7 +23,7 @@
 
         <div id="Timeline"></div>
         <script th:inline="javascript">
-            var bpmnJsonString = /*[[${figureJSON}]]*/ {};
+            var bpmnJsonString = [(${figureJSON})];
             var options = {
                 width: '100%',
                 timenav_position: 'top',
